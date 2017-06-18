@@ -317,7 +317,7 @@ $ docker-compose exec kafka /opt/kafka_2.11-0.10.1.1/bin/kafka-topics.sh --creat
 Next let's read the result of the final stream (the one produced by our little stream example):
 
 ```bash
-$ docker-compose exec kafka /opt/kafka_2.11-0.10.1.1/bin/kafka-console-consumer.sh
+$ docker-compose exec kafka /opt/kafka_2.11-0.10.1.1/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic stream-output --from-beginning --property print.key=true
 ```
 
 The observant may notice that we've added `--property print.key=true` to this startup (compared with previous runs). This is important because we want to see the word that is being counted (the messages have the word as its `key` and the count as its `value`).
