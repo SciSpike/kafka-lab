@@ -54,7 +54,7 @@ We've already created a heartbeat simulator.
 It needs to be built with maven as we saw in the previous exercise. With maven installed locally, run:
 
 ```
-$ cd ../heartbat-simulator
+$ cd ../heartbeat-simulator
 $ mvn package
 ```
 
