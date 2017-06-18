@@ -1,0 +1,36 @@
+version: '2'
+services:
+  zookeeper:
+    image: zookeeper:3.4.9
+    ports:
+      - 2181:2181
+  kafka:
+    image: wurstmeister/kafka:0.10.1.1
+    ports:
+      - 9092:9092
+      - 7203:7203
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: 192.168.1.4
+      KAFKA_ADVERTISED_PORT: 9092
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+    depends_on:
+      - zookeeper
+  master:
+    image: singularities/spark:2.0
+    command: start-spark master
+    hostname: master
+    volumes:
+      - ./spark:/app
+    environment:
+      HDFS_USER: root
+  worker:
+    image: singularities/spark:2.0
+    command: start-spark worker master
+    environment:
+      SPARK_WORKER_CORES: 1
+      SPARK_WORKER_MEMORY: 2g
+      HDFS_USER: root
+    links:
+      - master
+    volumes:
+      - ./spark:/app

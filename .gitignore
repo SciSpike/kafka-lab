@@ -1,0 +1,13 @@
+*~
+*.lock
+*.DS_Store
+*.dot
+*.jpage
+*.project
+*.classpath
+.settings/
+target/
+test-output/
+.idea
+*.iml
+*.ipr
