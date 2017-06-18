@@ -25,7 +25,7 @@ Note that all the labs assume that you have successfully installed docker.
 
 - Implementing topics and partitions
 
-  - [Implementation lab for topics and partitions](04-Implement-Topics-And-Paritions)
+  - [Implementation lab for topics and partitions](04-Implement-Topics-And-Partitions/topics-and-partitions.md)
 
 - Streaming
 
