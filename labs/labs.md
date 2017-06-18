@@ -17,7 +17,7 @@ Note that all the labs assume that you have successfully installed docker.
   - [Instructions for this lab](02-Publish-And-Subscribe/instructions.md)
 
     - [Direct link to the producer lab](02-Publish-And-Subscribe/producer.md)
-    - [Direct link to the consumer lab](02-Publish-And-Subscribe/consuer.md)
+    - [Direct link to the consumer lab](02-Publish-And-Subscribe/consumer.md)
 
 - Designing topics and partitions
 
@@ -31,3 +31,4 @@ Note that all the labs assume that you have successfully installed docker.
 
   - [Word count lab using Kafka Streams](06-Streaming/streaming.md)
   - [Word count lab using Spark](06-Streaming/spark-streaming-with-kafka.md)
+  - [IoT Example Lab](06-Streaming/spark-streaming-iot.md)
