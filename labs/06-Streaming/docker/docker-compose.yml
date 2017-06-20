@@ -10,7 +10,7 @@ services:
       - 9092:9092
       - 7203:7203
     environment:
-      KAFKA_ADVERTISED_HOST_NAME: [INSERT IP ADDRESS HERE]
+      KAFKA_ADVERTISED_HOST_NAME: 192.168.1.70
       KAFKA_ADVERTISED_PORT: 9092
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
     depends_on:
@@ -23,6 +23,8 @@ services:
       - ./spark:/app
     environment:
       HDFS_USER: root
+    depends_on:
+      - kafka 
   worker:
     image: singularities/spark:2.0
     command: start-spark worker master
@@ -34,3 +36,6 @@ services:
       - master
     volumes:
       - ./spark:/app
+    depends_on:
+      - master
+
