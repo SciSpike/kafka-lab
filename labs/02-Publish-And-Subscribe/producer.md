@@ -185,7 +185,7 @@ All the directory references in this lab is relative to where you expended the l
     }
     ```
 
-1. Now we are ready to compile and run the lab. In a terminal, change to the `lab` directory and run the following  [Maven](https://maven.apache.org/) command using a Docker image:
+1. Now we are ready to compile and run the lab. In a terminal, change to the `producer` directory and run the following  [Maven](https://maven.apache.org/) command using a Docker image:
 
     ```
     $ mvn clean package
