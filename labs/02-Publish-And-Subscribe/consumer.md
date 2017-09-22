@@ -47,7 +47,7 @@ Like the first part of this of this lab, we will use a [Maven](https://maven.apa
 
     Like the producer, there are [many configuration options available for Kafka consumer](http://kafka.apache.org/documentation.html#consumerconfigs) that should be explored for a production environment.
 
-1. Open `consumer/src/main/java/com/example/Consumer.java` again. A consumer can subscribe to one ore more topics. In this lab, the consumer will listen to messages from two topics with the following code:
+1. Open `consumer/src/main/java/com/example/Consumer.java` again. A consumer can subscribe to one or more topics. In this lab, the consumer will listen to messages from two topics with the following code:
 
     ```java
     consumer.subscribe(Arrays.asList("user-events", "global-events"));
@@ -78,7 +78,7 @@ Like the first part of this of this lab, we will use a [Maven](https://maven.apa
 
     The returned object of the `poll` method is an `Iterable` that contains all the new records. From there our example lab just uses a `switch` statement to process each type of topic. In a real application, you would do something more interesting here than output the results to `stdout`.
 
-1. Now we are ready to compile and run the lab. In a terminal, change to the `lab` directory and run the following  [Maven](https://maven.apache.org/) targets:
+1. Now we are ready to compile and run the lab. In a terminal, change to the `consumer` directory and run the following  [Maven](https://maven.apache.org/) targets:
 
     ```
     $ docker run -it --rm --name lesson -v "$PWD":/usr/src/lesson -w /usr/src/lesson maven:3-jdk-8 mvn clean package
