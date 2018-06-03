@@ -42,12 +42,12 @@ Copy the content shown below:
         <dependency>
             <groupId>org.apache.kafka</groupId>
             <artifactId>kafka-clients</artifactId>
-            <version>0.10.1.1</version>
+            <version>1.1.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.kafka</groupId>
             <artifactId>kafka-streams</artifactId>
-            <version>0.10.1.1</version>
+            <version>1.1.0</version>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
@@ -308,8 +308,8 @@ Let's create the topics. To do this, make sure you have a shell/terminal opened 
 In this shell, run the following commands:
 
 ```bash
-$ docker-compose exec kafka /opt/kafka_2.11-0.10.1.1/bin/kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 --partitions 1 --topic stream-input
-$ docker-compose exec kafka /opt/kafka_2.11-0.10.1.1/bin/kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 --partitions 1 --topic stream-output
+$ docker-compose exec kafka /opt/kafka/bin/kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 --partitions 1 --topic stream-input
+$ docker-compose exec kafka /opt/kafka/bin/kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 --partitions 1 --topic stream-output
 ```
 
 ### Start a stream listener
@@ -317,7 +317,7 @@ $ docker-compose exec kafka /opt/kafka_2.11-0.10.1.1/bin/kafka-topics.sh --creat
 Next let's read the result of the final stream (the one produced by our little stream example):
 
 ```bash
-$ docker-compose exec kafka /opt/kafka_2.11-0.10.1.1/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic stream-output --from-beginning --property print.key=true
+$ docker-compose exec kafka /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic stream-output --from-beginning --property print.key=true
 ```
 
 The observant may notice that we've added `--property print.key=true` to this startup (compared with previous runs). This is important because we want to see the word that is being counted (the messages have the word as its `key` and the count as its `value`).
@@ -327,7 +327,7 @@ The observant may notice that we've added `--property print.key=true` to this st
 In another terminal, start the stream producer.
 
 ```bash
-$ docker-compose exec kafka /opt/kafka_2.11-0.10.1.1/bin/kafka-console-producer.sh --broker-list kafka:9092 --topic stream-input
+$ docker-compose exec kafka /opt/kafka/bin/kafka-console-producer.sh --broker-list kafka:9092 --topic stream-input
 ```
 
 This will be the window where we produce the text where from which we'll perform a word count.
@@ -379,8 +379,8 @@ There may be a significant delay between when you type the messages and when you
 
 Here is an example of what you may see:
 
-Here is what I typed into the producer
 
+Here is what I typed into the producer
 ```bash
 $ docker-compose exec kafka /opt/kafka_2.11-0.10.1.1/bin/kafka-console-producer.sh --broker-list kafka:9092 --topic stream-input
 this is a test message
@@ -389,7 +389,7 @@ this is a test message
 Here is what I'll see in the final consumer (eventually):
 
 ```bash
-$ docker-compose exec kafka /opt/kafka_2.11-0.10.1.1/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic stream-output --from-beginning --property print.key=true
+$ docker-compose exec kafka /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic stream-output --from-beginning --property print.key=true
 this    1
 is      1
 a       1

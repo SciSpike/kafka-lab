@@ -43,8 +43,8 @@ $ docker-compose up
 Next we'll simply create the topics. Open a new terminal in the `docker` directory.
 
 ```
-$ docker-compose exec kafka /opt/kafka_2.11-0.10.1.1/bin/kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 --partitions 1 --topic device-heartbeat
-$ docker-compose exec kafka /opt/kafka_2.11-0.10.1.1/bin/kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 --partitions 1 --topic device-event
+$ docker-compose exec kafka /opt/kafka/bin/kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 --partitions 1 --topic device-heartbeat
+$ docker-compose exec kafka /opt/kafka/bin/kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 --partitions 1 --topic device-event
 ```
 
 ## Build and run the device simulator
@@ -87,7 +87,7 @@ To see the messages, let's run our usual console consumer. In a new terminal `cd
 
 ```
 $ cd docker
-$ docker-compose exec kafka /opt/kafka_2.11-0.10.1.1/bin/kafka-console-consumer.sh --bootstrap-server kafka:9092 --topic device-heartbeat
+$ docker-compose exec kafka /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server kafka:9092 --topic device-heartbeat
 ```
 
 After a few seconds you should start to see heartbeat messages being produced. E.g.:
@@ -151,7 +151,7 @@ In a new shell, go to the `docker` directory.
 
 ```
 $ cd docker
-$ docker-compose exec kafka /opt/kafka_2.11-0.10.1.1/bin/kafka-console-consumer.sh --bootstrap-server kafka:9092 --topic device-event
+$ docker-compose exec kafka /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server kafka:9092 --topic device-event
 ```
 
 It may take some time before you see online or offline messages (see the device simulator and you'll see the randomness of the heartbeat production).

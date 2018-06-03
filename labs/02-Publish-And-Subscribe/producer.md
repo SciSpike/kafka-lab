@@ -24,17 +24,17 @@ All the directory references in this lab is relative to where you expended the l
     version: '2'
     services:
       zookeeper:
-        image: zookeeper:3.4.9
+        image: wurstmeister/zookeeper:3.4.6
         ports:
           - 2181:2181
       kafka:
-        image: wurstmeister/kafka:0.10.1.1
+        image: wurstmeister/kafka:1.1.0
         ports:
           - 9092:9092
           - 7203:7203
         environment:
           KAFKA_ADVERTISED_HOST_NAME: [INSERT IP ADDRESS HERE]
-          KAFKA_ADVERTISED_PORT: 9092
+    #      KAFKA_ADVERTISED_HOST_NAME: localhost
           KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
         depends_on:
           - zookeeper
@@ -56,8 +56,8 @@ All the directory references in this lab is relative to where you expended the l
         inet6 fe80::cc8a:c5ff:fe43:b670%awdl0 prefixlen 64 scopeid 0x8
         inet6 fe80::7df6:ec93:ffea:367a%utun0 prefixlen 64 scopeid 0xa
     ```
-
     In this case, the IP address to use is `10.0.1.4`. Make sure you *do not* use `127.0.0.1` because that will not work correctly.
+
 
     On Windows, you can use the following command:
 
@@ -80,6 +80,10 @@ All the directory references in this lab is relative to where you expended the l
 
     Save the `docker-compose.yml` file after making this modification.
 
+      > We have noticed on some configurations of Windows and Linux that the use of `KAFKA_ADVERTISED_HOST_NAME` does not work properly (the Kafka clients can't connect).
+      > We've not found the source of this problem, but in many of the cases we've seen, the use of `localhost` instead of the host IP may work.
+      > Note though, that the use of `localhost` prevents you from running multiple Kafka brokers on the same machine.
+
 1. Start the Kafka and Zookeeper processes using Docker Compose:
 
     ```
@@ -89,14 +93,14 @@ All the directory references in this lab is relative to where you expended the l
 1. Open an additional terminal window in the lesson directory, `docker/`. We are going to create two topics that will be used in the Producer program. Run the following commands:
 
     ```
-    $ docker-compose exec kafka /opt/kafka_2.11-0.10.1.1/bin/kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 --partitions 1 --topic user-events
-    $ docker-compose exec kafka /opt/kafka_2.11-0.10.1.1/bin/kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 --partitions 1 --topic global-events
+    $ docker-compose exec kafka /opt/kafka/bin/kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 --partitions 1 --topic user-events
+    $ docker-compose exec kafka /opt/kafka/bin/kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 --partitions 1 --topic global-events
     ```
 
 1. List the topics to double check they were created without any issues.
 
     ```
-    $ docker-compose exec kafka /opt/kafka_2.11-0.10.1.1/bin/kafka-topics.sh --list --zookeeper zookeeper:2181
+    $ docker-compose exec kafka /opt/kafka/bin/kafka-topics.sh --list --zookeeper zookeeper:2181
     global-events
     user-events
     ```
@@ -107,7 +111,7 @@ All the directory references in this lab is relative to where you expended the l
     <dependency>
         <groupId>org.apache.kafka</groupId>
         <artifactId>kafka-clients</artifactId>
-        <version>0.10.1.1</version>
+        <version>1.1.0</version>
     </dependency>
     <dependency>
         <groupId>com.google.guava</groupId>
