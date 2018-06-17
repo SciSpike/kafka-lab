@@ -153,7 +153,7 @@ Run the producer as in the previous lab. Enter some text and observe the output.
 In the producer terminal, run the producer and then enter a line of text:
 
 ```
-$ docker-compose exec kafka /opt/kafka_2.11-0.10.1.1/bin/kafka-console-producer.sh --broker-list kafka:9092 --topic stream-input
+$ docker-compose exec kafka /opt/kafka/bin/kafka-console-producer.sh --broker-list kafka:9092 --topic stream-input
 hello hello hi
 ```
 

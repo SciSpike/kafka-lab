@@ -177,7 +177,7 @@ Run `docker-compose up` from the `docker` directory.
 Create topic `vehicle-observations`
 
 ```
-$ docker-compose exec kafka /opt/kafka_2.11-0.10.1.1/bin/kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 --partitions 1 --topic vehicle-observations
+$ docker-compose exec kafka /opt/kafka/bin/kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 --partitions 1 --topic vehicle-observations
 ```
 
 ## Producer
@@ -185,7 +185,7 @@ $ docker-compose exec kafka /opt/kafka_2.11-0.10.1.1/bin/kafka-topics.sh --creat
 Run the producer.
 
 ```
-$ docker-compose exec kafka /opt/kafka_2.11-0.10.1.1/bin/kafka-console-producer.sh --broker-list kafka:9092 --topic vehicle-observations
+$ docker-compose exec kafka /opt/kafka/bin/kafka-console-producer.sh --broker-list kafka:9092 --topic vehicle-observations
 ```
 
 ## Deploy

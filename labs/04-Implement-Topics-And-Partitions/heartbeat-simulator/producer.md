@@ -89,14 +89,14 @@ All the directory references in this lab is relative to where you expended the l
 1. Open an additional terminal window in the lesson directory, `docker/`. We are going to create two topics that will be used in the Producer program. Run the following commands:
 
     ```
-    $ docker-compose exec kafka /opt/kafka_2.11-0.10.1.1/bin/kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 --partitions 1 --topic user-events
-    $ docker-compose exec kafka /opt/kafka_2.11-0.10.1.1/bin/kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 --partitions 1 --topic global-events
+    $ docker-compose exec kafka /opt/kafka/bin/kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 --partitions 1 --topic user-events
+    $ docker-compose exec kafka /opt/kafka/bin/kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 --partitions 1 --topic global-events
     ```
 
 1. List the topics to double check they were created without any issues.
 
     ```
-    $ docker-compose exec kafka /opt/kafka_2.11-0.10.1.1/bin/kafka-topics.sh --list --zookeeper zookeeper:2181
+    $ docker-compose exec kafka /opt/kafka/bin/kafka-topics.sh --list --zookeeper zookeeper:2181
     global-events
     user-events
     ```
@@ -107,7 +107,7 @@ All the directory references in this lab is relative to where you expended the l
     <dependency>
         <groupId>org.apache.kafka</groupId>
         <artifactId>kafka-clients</artifactId>
-        <version>0.10.1.1</version>
+        <version>1.1.0</version>
     </dependency>
     <dependency>
         <groupId>com.google.guava</groupId>

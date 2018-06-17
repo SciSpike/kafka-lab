@@ -19,9 +19,9 @@ Because we use docker and docker-compose, the commands to run the kafka CLI are 
 
 We have all of the commands listed in the exercise below, so you can simply copy and paste, but as you get more advanced, you may want to experiment with the CLI.
 
-One way to make this simpler is to alias your commands. When we run the Kafka commands in the running docker image, we reach into the image and run a command in the directory `/opt/kafka_2.11-0.10.1.1/bin/`.
+One way to make this simpler is to alias your commands. When we run the Kafka commands in the running docker image, we reach into the image and run a command in the directory `/opt/kafka/bin/`.
 
-This means that all of our commands are preseeded with the following noise: `docker-compose exec kafka /opt/kafka_2.11-0.10.1.1/bin/`
+This means that all of our commands are preseeded with the following noise: `docker-compose exec kafka /opt/kafka/bin/`
 
 You may want to alias these commands. In Linux and Mac, you can simply create aliases in your terminal setup.
 

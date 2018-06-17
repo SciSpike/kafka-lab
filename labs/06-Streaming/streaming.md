@@ -382,7 +382,7 @@ Here is an example of what you may see:
 
 Here is what I typed into the producer
 ```bash
-$ docker-compose exec kafka /opt/kafka_2.11-0.10.1.1/bin/kafka-console-producer.sh --broker-list kafka:9092 --topic stream-input
+$ docker-compose exec kafka /opt/kafka/bin/kafka-console-producer.sh --broker-list kafka:9092 --topic stream-input
 this is a test message
 ```
 
