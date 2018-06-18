@@ -105,7 +105,7 @@ All the directory references in this lab is relative to where you expended the l
     user-events
     ```
 
-1. Open `producer/pom.xml` in your favorite text editor. At the time of this writing, the current stable version of Kafka is 0.10.1.1. Maven is being used for dependency management in this lab and includes the following in the `pom.xml` for Kafka:
+1. Open `producer/pom.xml` in your favorite text editor. At the time of this writing, the current stable version of Kafka is 1.1.0. Maven is being used for dependency management in this lab and includes the following in the `pom.xml` for Kafka:
 
     ```xml
     <dependency>
