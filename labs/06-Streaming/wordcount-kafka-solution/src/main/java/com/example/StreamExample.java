@@ -14,9 +14,10 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.KeyValue;
+import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.kstream.KStream;
-import org.apache.kafka.streams.kstream.KStreamBuilder;
+import org.apache.kafka.streams.kstream.Materialized;
 
 public class StreamExample {
 
@@ -27,9 +28,9 @@ public class StreamExample {
 		// Where is zookeeper?
 		props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
 		// Default key serializer
-		props.put(StreamsConfig.KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
+		props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
 		// Default value serializer
-		props.put(StreamsConfig.VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
+		props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
 
 		// setting offset reset to earliest so that we can re-run the the example code
 		// with the same pre-loaded data
@@ -38,28 +39,36 @@ public class StreamExample {
 		props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
 
 		// First we create a stream builder
-		KStreamBuilder bld = new KStreamBuilder();
+		StreamsBuilder bld = new StreamsBuilder();
 
 		// Next, lets specify which stream we consume from
 		KStream<String, String> source = bld.stream("stream-input");
 
 		// This starts the processing topology
 		source
-			// convert each message list of words
-			.flatMapValues(value -> Arrays.asList(value.toLowerCase(Locale.getDefault()).split(" ")))
+			// convert each message list of words //List<string>
+			.flatMapValues(value -> {
+				//System.out.println("value = "+value);
+				//System.out.println("return "+Arrays.asList(value.toLowerCase(Locale.getDefault()).split(" ")));
+				return Arrays.asList(value.toLowerCase(Locale.getDefault()).split(" "));
+			})
 			// We're not really interested in the key in the incoming messages, we only want the values
 			.map( (key,value) -> new KeyValue<>(value, value))
 			// now we need to group them by key
 			.groupByKey()
 			// let's keep a table count called Counts"
-			.count("Counts")
+			.count(Materialized.as("Counts"))
 			// next we map the counts into strings to make serialization work
-			.mapValues(value -> value.toString())
+			.mapValues(value -> {
+				System.out.println("Map values == "+value);
+				return value.toString();
+			})
+			.toStream()
 			// and finally we pipe the output into the stream-output topic
 			.to("stream-output");
 		
 		// let's hook up to Kafka using the builder and the properties
-		KafkaStreams streams = new KafkaStreams(bld, props);
+		KafkaStreams streams = new KafkaStreams(bld.build(), props);
 		// and then... we can start the stream processing
 		streams.start();
 

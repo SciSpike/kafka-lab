@@ -12,9 +12,10 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.KeyValue;
+import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.kstream.KStream;
-import org.apache.kafka.streams.kstream.KStreamBuilder;
+import org.apache.kafka.streams.kstream.Materialized;
 
 public class StreamExample {
 
@@ -25,9 +26,9 @@ public class StreamExample {
 		// Where is zookeeper?
 		props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
 		// Default key serializer
-		props.put(StreamsConfig.KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
+		props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
 		// Default value serializer
-		props.put(StreamsConfig.VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
+		props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
 
 		// setting offset reset to earliest so that we can re-run the the example code
 		// with the same pre-loaded data
@@ -35,9 +36,9 @@ public class StreamExample {
 		// https://cwiki.apache.org/confluence/display/KAFKA/Kafka+Streams+Application+Reset+Tool
 		props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
 
-		// First we create a stream builder
-		KStreamBuilder bld = new KStreamBuilder();
 
+		// First we create a stream builder
+		StreamsBuilder bld = new StreamsBuilder();
 		// Next, lets specify which stream we consume from
 		KStream<String, String> source = bld.stream("gps-locations");
 
@@ -45,22 +46,20 @@ public class StreamExample {
 		source
 			// Convert the incoming tab delimited entry into an array of word
 			.map( (key,value) -> new KeyValue<>(key, value.split("\t")))
-			// filter out those locates where speed is greater than 0
-			.filter((key,value)-> value.length > 5 && Double.parseDouble(value[2]) == 0.0)
+			// filter out those locates where speed is less than < 1
+			.filter((key,value)-> value.length > 5 && Double.parseDouble(value[2]) < 1.0)
 			// now we need to group them by key
 			.map((key,value) -> new KeyValue<>(new LocationKey(value[0], Double.parseDouble(value[4]), Double.parseDouble(value[5])).toString(), value[0]))
 			.groupByKey()
 			// let's keep a table count called Counts"
-			.count("ParkingCounts")
-//			.foreach((key,value) -> System.out.println(key))
-			// filter out those where we only seen the vehicle parked 2 or fewer times
-//			.filter((key, value) -> value < 3)
+			.count( Materialized.as("parking-store"))
 			.mapValues((value) -> Long.toString(value))
 			// and finally we pipe the output into the stream-output topic
+			.toStream()
 			.to("frequent-parking");
 
 		// let's hook up to Kafka using the builder and the properties
-		KafkaStreams streams = new KafkaStreams(bld, props);
+		KafkaStreams streams = new KafkaStreams(bld.build(), props);
 		// and then... we can start the stream processing
 		streams.start();
 

@@ -10,7 +10,7 @@ In this lab, you will create a Kafka Consumer using the Java API. This is the co
 
 ## Prerequisites
 
-Like the first part of this of this lab, we will use a [Maven](https://maven.apache.org/) Docker image to compile the Kafka consumer Java application. You should have a text editor available with Java syntax highlighting for clarity. You will need a basic understanding of Java programming to follow the lab although coding will not be required. You should have already completed the previous Kafka Producer lab so that there are messages ready in the Kafka server for the Consumer to process.
+Like the first part of this lab, we will use a [Maven](https://maven.apache.org/) Docker image to compile the Kafka consumer Java application. You should have a text editor available with Java syntax highlighting for clarity. You will need a basic understanding of Java programming to follow the lab although coding will not be required. You should have already completed the previous Kafka Producer lab so that there are messages ready in the Kafka server for the Consumer to process.
 
 ## Instructions
 1. Open `consumer/src/main/java/com/example/Consumer.java` in your favorite text editor. Like the `Producer` we saw in the previous lab, this is a fairly simple Java class but can be expanded upon in a real application. For example, after processing the incoming records from Kafka, you would probably want to do something interesting like store them in [HBase](https://hbase.apache.org/) for later analysis. This application has two main responsibilities:
@@ -80,7 +80,13 @@ Like the first part of this of this lab, we will use a [Maven](https://maven.apa
 
 1. Now we are ready to compile and run the lab. In a terminal, change to the `lab` directory and run the following  [Maven](https://maven.apache.org/) targets:
 
+    ```sh
+    mvn clean package
     ```
+
+or if you don't have maven installed and want to run it through docker...
+
+    ```sh
     $ docker run -it --rm --name lesson -v "$PWD":/usr/src/lesson -w /usr/src/lesson maven:3-jdk-8 mvn clean package
     ```
 

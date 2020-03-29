@@ -10,7 +10,7 @@ final public class LocationKey {
 		System.out.println("Calculating geohash for " + id + "(" + latitude + "," + longitude + ")");
 		this.objectId = id;
 		try {
-			this.geoHash = GeoHash.encodeHash(longitude, latitude, 6);
+			this.geoHash = GeoHash.encodeHash(longitude, latitude, 7);
 		}
 		catch (Exception e) {
 			System.out.println(e.getMessage());

@@ -77,3 +77,4 @@ This gives us a couple of advantages:
   * Kafka administration
   * Kafka monitoring
   * Security
+* Exactly once delivery
