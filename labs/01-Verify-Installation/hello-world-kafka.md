@@ -86,11 +86,10 @@ The first time you run this command, it will take a while to download the approp
 
   ```
   $ docker-compose exec kafka kafka-topics.sh --bootstrap-server :9092 --list
-  __consumer_offsets
   helloworld
   ```
 
-> NOTE: `__consumer_offsets` is an administrative topic automatically created by Kafka itself.
+> NOTE: If you see `__consumer_offsets`, it is an administrative topic automatically created by Kafka itself.
 
 5. Normally you would use the Kafka API from within your application to produce messages but Kafka comes with a command
    line _producer_ client that can be used for testing purposes. Each line from standard input will be treated as a
