@@ -1,0 +1,4 @@
+macos,linux,windows,jetbrains+all,eclipse,code,emacs,maven,java
+# the above line is passed to gitignore.io; add anything custom below, then execute .gitignore.sh
+.data/
+.idea/
