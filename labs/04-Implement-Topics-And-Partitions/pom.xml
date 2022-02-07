@@ -12,4 +12,11 @@
 
   <artifactId>lab-04-parent</artifactId>
   <packaging>pom</packaging>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.kafka</groupId>
+      <artifactId>kafka_2.13</artifactId>
+    </dependency>
+  </dependencies>
 </project>
