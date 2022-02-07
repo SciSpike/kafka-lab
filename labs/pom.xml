@@ -14,7 +14,7 @@
     <dependencies>
       <dependency>
         <groupId>org.apache.kafka</groupId>
-        <artifactId>kafka_2.13</artifactId>
+        <artifactId>kafka-clients</artifactId>
         <version>3.1.0</version>
       </dependency>
       <dependency>

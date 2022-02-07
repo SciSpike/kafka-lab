@@ -4,9 +4,11 @@
 
 In this example, we will write a Spark Streaming program that consumes messages from Kafka.
 
-We will reuse the whole setup from the previous lab, so this lab is best done as a continuation of Kafka Streaming setup.
+We will reuse the whole setup from the previous lab, so this lab is best done as a continuation of Kafka Streaming
+setup.
 
-For Spark, we will use Scala. To build the program, you will need to download SBT, the Scala Build Tool. This is an easy install! Follow the installation instructions from the site <http://www.scala-sbt.org/> and install it for your machine.
+For Spark, we will use Scala. To build the program, you will need to download SBT, the Scala Build Tool. This is an easy
+install! Follow the installation instructions from the site <http://www.scala-sbt.org/> and install it for your machine.
 
 ## Spark Streaming Program
 
@@ -94,7 +96,8 @@ object SparkKafka {
 
 ## Building and Packaging the Spark Program
 
-Go to the directory `spark-kafka`. You will see that it contains the file `build.sbt`. We will use it to compile and build a jar file that we can deploy to Spark.
+Go to the directory `spark-kafka`. You will see that it contains the file `build.sbt`. We will use it to compile and
+build a jar file that we can deploy to Spark.
 
 In that directory run the command in the terminal:
 
@@ -102,7 +105,8 @@ In that directory run the command in the terminal:
 sbt assembly
 ```
 
-The first time you run sbt, it may take a while, as SBT needs to download Scala in the right version and all needed libraries.
+The first time you run sbt, it may take a while, as SBT needs to download Scala in the right version and all needed
+libraries.
 
 The result is that the jar file is created in the directory `target/scala-2.11/spark-kafka.jar`.
 
@@ -118,7 +122,9 @@ Go to the `docker` directory and run the deployment command.
 
 If you don't have the docker cluster running already, you'll have to first run the `docker-compose up` command.
 
-Run the command to submit the jar to Spark. The directory `app` in the image is mapped to directory `spark` on our machine, as set in the `volumes` parameter in the `docker-compose.yml` file. We are also passing command line parameters for the broker, topic, and interval:
+Run the command to submit the jar to Spark. The directory `app` in the image is mapped to directory `spark` on our
+machine, as set in the `volumes` parameter in the `docker-compose.yml` file. We are also passing command line parameters
+for the broker, topic, and interval:
 
 ```
 docker-compose exec master spark-submit \

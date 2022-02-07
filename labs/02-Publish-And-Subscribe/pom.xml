@@ -16,7 +16,7 @@
   <dependencies>
     <dependency>
       <groupId>org.apache.kafka</groupId>
-      <artifactId>kafka_2.13</artifactId>
+      <artifactId>kafka-clients</artifactId>
     </dependency>
   </dependencies>
 </project>
