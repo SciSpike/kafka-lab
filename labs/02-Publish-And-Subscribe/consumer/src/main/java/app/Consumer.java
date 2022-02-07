@@ -23,7 +23,7 @@ public class Consumer {
       props.setProperty("group.instance.id", props.getProperty("client.id"));
 
       if (inDocker) {
-        props.setProperty("bootstrap.servers", props.getProperty("bootstrap.servers.internal"));
+        props.setProperty("bootstrap.servers", props.getProperty("bootstrap.servers.docker"));
       }
 
       consumer = new KafkaConsumer<>(props);
