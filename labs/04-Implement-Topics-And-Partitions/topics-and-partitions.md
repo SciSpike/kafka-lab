@@ -38,8 +38,8 @@ $ docker run -it --rm -v "$(cd "$PWD/../.."; pwd)":/course-root -w "/course-root
 
 Next, let's start the simulator of device messages.
 
-```
-$ docker run --network 04-implement-topics-and-partitions_default --rm -it -v "$PWD:/pwd" -w /pwd openjdk:11 java -jar target/device-simulator-app-*.jar
+```shell
+$ docker run --network "$(cd .. && basename "$(pwd)" | tr '[:upper:]' '[:lower:]')_default" --rm -it -v "$PWD:/pwd" -w /pwd openjdk:11 java -jar target/device-simulator-app-*.jar
 SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
 SLF4J: Defaulting to no-operation (NOP) logger implementation
 SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.
@@ -94,7 +94,7 @@ $ docker run -it --rm -v "$(cd "$PWD/../.."; pwd)":/course-root -w "/course-root
 Next, run it:
 
 ```shell
-$ docker run --network 04-implement-topics-and-partitions_default --rm -it -v "$PWD:/pwd" -w /pwd openjdk:11 java -jar target/device-monitor-*.jar
+$ docker run --network "$(cd .. && basename "$(pwd)" | tr '[:upper:]' '[:lower:]')_default" --rm -it -v "$PWD:/pwd" -w /pwd openjdk:11 java -jar target/device-monitor-*.jar
 ```
 
 You should now see a set of output similar to this:

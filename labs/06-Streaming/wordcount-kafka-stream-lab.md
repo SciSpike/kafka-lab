@@ -1,6 +1,6 @@
 # Word Count Example
 
-## Introductions
+## Introduction
 
 In this exercise we'll implement the obligatory streaming example used by almost every streaming tool.
 
@@ -317,9 +317,8 @@ ran `docker-compose up`.
 
 In this shell, run the following commands:
 
-```bash
-$ docker-compose exec kafka /opt/kafka/bin/kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 --partitions 1 --topic stream-input
-$ docker-compose exec kafka /opt/kafka/bin/kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 --partitions 1 --topic stream-output
+```shell
+$ for it in input output; do docker-compose -f streams.yml exec kafka kafka-topics.sh --create --bootstrap-server kafka:9092 --replication-factor 1 --partitions 1 --topic stream-$it; done
 ```
 
 ### Start a stream listener

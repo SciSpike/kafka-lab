@@ -3,7 +3,6 @@ package app;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
-import scala.Tuple2;
 
 import java.io.File;
 import java.io.IOException;
@@ -91,7 +90,7 @@ public class DeviceMonitor {
     }
   }
 
-  private static Tuple2<KafkaProducer<String, String>, String> createProducer() throws IOException {
+  private static Tuple<KafkaProducer<String, String>, String> createProducer() throws IOException {
     try (var stream =
         DeviceMonitor.class.getClassLoader().getResourceAsStream("producer.properties")) {
       Properties props = new Properties();
@@ -102,7 +101,7 @@ public class DeviceMonitor {
         props.setProperty("bootstrap.servers", props.getProperty("bootstrap.servers.docker"));
       }
 
-      return new Tuple2<>(new KafkaProducer<>(props), props.getProperty("topics.device"));
+      return new Tuple<>(new KafkaProducer<>(props), props.getProperty("topics.device"));
     }
   }
 
@@ -117,5 +116,15 @@ public class DeviceMonitor {
 
   private static ProducerRecord<String, String> createOnlineMessage(String key, String topic) {
     return new ProducerRecord<>(topic, key, key + " is back online");
+  }
+
+  public static class Tuple<T1,T2> {
+    public T1 _1;
+    public T2 _2;
+
+    public Tuple(T1 t1, T2 t2) {
+      this._1 = t1;
+      this._2 = t2;
+    }
   }
 }
