@@ -17,10 +17,10 @@ public class StreamExample {
   private static boolean inDocker = new File("/.dockerenv").exists();
 
   public static void main(String[] args) throws Exception {
-    Properties props = getProperties();
+    var props = getProperties();
 
     // First we create a stream builder
-    StreamsBuilder builder = new StreamsBuilder();
+    var builder = new StreamsBuilder();
 
     // Next, lets specify which stream we consume from
     KStream<String, String> stream = builder.stream(props.getProperty("topics.input"));
@@ -29,22 +29,14 @@ public class StreamExample {
     stream
         // convert each message list of words
         .flatMapValues(
-            it -> {
-              return Arrays.asList(it.trim().toLowerCase().split("(\\s|\\.|\\?|!|;|:|-|,|\")+"));
-            })
+            it -> Arrays.asList(it.trim().toLowerCase().split("(\\s|\\.|\\?|!|;|:|-|,|\")+")))
         // only keep non-blank words
-        .filter(
-            (__, value) -> {
-              value = value.trim();
-              return value.length() > 0;
-            })
+        .filter((__, value) -> value.trim().length() > 0)
         // We're not really interested in the key in the incoming messages; we only want the values
-        .map((__, value) -> {
-          return new KeyValue<>(value, value);
-        })
+        .map((__, value) -> new KeyValue<>(value, value))
         // now we need to group them by the word
         .groupByKey()
-        // let's keep a table count called Counts"
+        // let's keep a ktable count called Counts"
         .count(Materialized.as("Counts"))
         // next we map the counts into strings to make serialization work
         .mapValues(Object::toString)
