@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Properties;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 public class StreamExample {
   private static boolean inDocker = new File("/.dockerenv").exists();
@@ -29,7 +30,7 @@ public class StreamExample {
     stream
         // convert each message list of words
         .flatMapValues(
-            it -> Arrays.asList(it.trim().toLowerCase().split("(\\s|\\.|\\?|!|;|:|-|,|\")+")))
+            it -> Arrays.asList(it.trim().toLowerCase().split("(\\s|\\.|\\?|!|;|:|-|/|,|\")+")))
         // only keep non-blank words
         .filter((__, value) -> value.trim().length() > 0)
         // We're not really interested in the key in the incoming messages; we only want the values

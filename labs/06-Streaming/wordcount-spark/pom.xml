@@ -6,11 +6,26 @@
 
   <parent>
     <groupId>app</groupId>
-    <artifactId>lab-04-parent</artifactId>
+    <artifactId>lab-06-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>device-simulator-app</artifactId>
+  <artifactId>wordcount-spark</artifactId>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.spark</groupId>
+      <artifactId>spark-core_2.13</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.spark</groupId>
+      <artifactId>spark-streaming_2.13</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.spark</groupId>
+      <artifactId>spark-streaming-kafka-0-10_2.13</artifactId>
+    </dependency>
+  </dependencies>
 
   <build>
     <plugins>
@@ -22,7 +37,7 @@
             <configuration>
               <transformers>
                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                  <mainClass>app.DeviceSimulatorApp</mainClass>
+                  <mainClass>app.SparkKafka</mainClass>
                 </transformer>
               </transformers>
             </configuration>
