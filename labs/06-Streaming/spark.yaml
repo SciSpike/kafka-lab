@@ -16,6 +16,7 @@ services:
       - "9093:9093"
     volumes:
       - "${PWD}/.data:/bitnami"
+      - "${PWD}:/lab-root"
     environment:
       - KAFKA_BROKER_ID=1
       - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
@@ -27,14 +28,18 @@ services:
     depends_on:
       - zookeeper
   spark-master:
-    image: bitnami/spark:3
+    image: bitnami/spark:3-java11
     ports:
       - "7077:7077"
       - "8080:8080"
+    volumes:
+      - "${PWD}:/lab-root"
     environment:
       - SPARK_MODE=master
   spark-worker:
-    image: bitnami/spark:3
+    image: bitnami/spark:3-java11
     environment:
       - SPARK_MODE=worker
       - SPARK_MASTER_URL=spark://spark-master:7077
+    volumes:
+      - "${PWD}:/lab-root"

@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.util.*;
 import java.util.regex.Pattern;
 
+// spark-submit --master spark://spark-master:7077 --class app.SparkKafka /lab-root/wordcount-spark/target/wordcount-spark-1.0.0-SNAPSHOT.jar
+
 public class SparkKafka {
   private static boolean inDocker = new File("/.dockerenv").exists();
   private static Pattern regex = Pattern.compile("(\\s|\\.|\\?|!|;|:|-|/|,|\")+");
@@ -58,6 +60,7 @@ public class SparkKafka {
       props.setProperty(
           "application.id", props.getProperty("application.id.prefix") + "-" + UUID.randomUUID());
       props.setProperty("client.id", props.getProperty("application.id"));
+      props.setProperty("group.id", props.getProperty("application.id"));
       props.setProperty("group.instance.id", props.getProperty("application.id"));
 
       if (inDocker) {
