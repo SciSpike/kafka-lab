@@ -16,6 +16,7 @@ import java.util.regex.Pattern;
 
 public class StreamExample {
   private static boolean inDocker = new File("/.dockerenv").exists();
+  private static Pattern regex = Pattern.compile("(\\s|\\.|\\?|!|;|:|-|/|,|\")+");
 
   public static void main(String[] args) throws Exception {
     var props = getProperties();
@@ -29,20 +30,20 @@ public class StreamExample {
     // This starts the processing topology
     stream
         // convert each message list of words
-        .flatMapValues(
-            it -> Arrays.asList(it.trim().toLowerCase().split("(\\s|\\.|\\?|!|;|:|-|/|,|\")+")))
+        .flatMapValues(it -> Arrays.asList(regex.split(it.trim().toLowerCase())))
         // only keep non-blank words
         .filter((__, value) -> value.trim().length() > 0)
         // We're not really interested in the key in the incoming messages; we only want the values
         .map((__, value) -> new KeyValue<>(value, value))
         // now we need to group them by the word
         .groupByKey()
-        // let's keep a ktable count called Counts"
+        // let's keep a ktable count called Counts
         .count(Materialized.as("Counts"))
-        // next we map the counts into strings to make serialization work
-        .mapValues(Object::toString)
+        // convert the KTable back to a stream
         .toStream()
-        // and finally we pipe the output into the stream-output topic
+        // format the value to be "$word:$count"
+        .map((key, val) -> new KeyValue<>(key, String.format("%s:%s", key, val)))
+        // and finally we pipe the output values into the stream-output topic
         .to(props.getProperty("topics.output"));
 
     // let's hook up to Kafka using the builder and the properties

@@ -30,7 +30,7 @@ Make sure you see the `binami/spark` image listed with the tag `3-java11`, simil
 
 ### Examine the code
 
-Using your favorite editor, open the file `wordcount-spark/src/main/java/app/SparkKafka.java`.
+Using your favorite editor, open the file `wordcount-spark-streaming/src/main/java/app/SparkKafka.java`.
 
 First, we instantiate a `JavaStreamingContext` given a `SparkConf` & a `Duration`. Then, we use `KafakUtils`, from
 Spark's Kafka streaming connector, to create a stream of lines coming in from the configured input topic. The Kafka
@@ -67,11 +67,11 @@ The command above will build and package our uber jar with the application and a
 In order to run our app, we first need to run Kafka & Spark. First, ensure that you've shut down any prior docker
 containers.
 
-Next, open a new terminal in the lab's root directory & run the Docker Compose stack using the `spark.yaml`
+Next, open a new terminal in the lab's root directory & run the Docker Compose stack using the `spark-streaming.yaml`
 configuration file:
 
 ```shell
-$ docker-compose -f spark.yaml up
+$ docker-compose -f spark-streaming.yaml up
 ```
 
 You will see logs from all the containers that are launched as part of the solution. Once the terminal stops reflecting
@@ -84,7 +84,7 @@ Now, let's submit our Spark application to the Spark cluster running in our dock
 In a new terminal in the lab's root directory, open a bash prompt with the following command:
 
 ```shell
-$ docker-compose -f spark.yaml exec spark-master bash
+$ docker-compose -f spark-streaming.yaml exec spark-master bash
 ```
 
 Then, now inside the container, submit your Spark application to the cluster with `spark-submit`:
@@ -119,7 +119,7 @@ In yet another terminal, change into the lab's root directory again and this tim
 container:
 
 ```shell
-$ docker-compose -f spark.yaml exec kafka bash
+$ docker-compose -f spark-streaming.yaml exec kafka bash
 ```
 
 At the subsequent prompt, pump some lines into the kafka console producer:
@@ -156,7 +156,7 @@ $ cat /lab-root/war-and-peace.txt | kafka-console-producer.sh --bootstrap-server
 In the lab's root directory, you can now bring down the cluster with the command
 
 ```shell
-$ docker-compose -f spark.yaml down
+$ docker-compose -f spark-streaming.yaml down
 ```
 
 Congratulations, you've completed this lab!
