@@ -1,131 +1,143 @@
-# IOT Kafka Stream Solution
+# IoT Kafka Stream Solution
 
-In this example, we process real-world vehicle IoT data. Our data is in file `vehicle_1_1000.tsv`. This file contains first 1000 rows of the vehicle sensor data representing car movements..
+In this example, we process real-world vehicle IoT data. Our data is in file `vehicle_1_1000.tsv`. This file contains
+first 1000 rows of the vehicle sensor data representing car movements.
 
-The data stored is in a tab-separated file. The values represents observed position of the tracked vehicles
+The data stored is in a tab-separated file. The values represent observed position of the tracked vehicles.
 
-### Data Schema
+## Data Schema
 
 The data fields are:
 
 - Col 1: Device ID (unique for each vehicle)
-- Col 2: Time of the observation (in UTC)
+- Col 2: Instant of the observation (in ISO-8601 format)
 - Col 3: Speed of the vehicle
 - Col 4: The compass direction of the vehicle
 - Col 5: The longitude of the GPS coordinates
 - Col 6: The latitude of the GPS coordinates
 
-#### Accuracy of GPS Coordinates
+## Accuracy of GPS Coordinates
 
 For GPS coordinates, about 100 meters accuracy is roughly coordinates rounded to 3 decimal places.
 
-See [GIS Accuracy](https://gis.stackexchange.com/questions/8650/measuring-accuracy-of-latitude-and-longitude) for a detailed explanation.
+See [GIS Accuracy](https://gis.stackexchange.com/questions/8650/measuring-accuracy-of-latitude-and-longitude) for a
+detailed explanation.
 
-We'll use a trick using geohash.
-Geohash is an open source algorithm that splits the world into tiles.
-You can read about geohashes [here](https://en.wikipedia.org/wiki/Geohash)
+We'll use a trick using geohashing. Geohashing is an open source algorithm that splits the world into tiles. You can
+read about geohashes [here](https://en.wikipedia.org/wiki/Geohash)
 
-## The Goal
+## Goal
 
-The goal is to count the number of times a car is observed parked at the same location with accuracy of about 100 meters.
-We'll use Kafka Streams to do so.
+The goal is to count the number of times a car is observed parked at the same location (that is, the same geohash) with
+accuracy of about 100 meters. We'll use Kafka Streams to do so.
 
-## The lab
+## Lab
 
-In this lab we'll simply run a possible solution.
+There are two projects in the lab.
 
-The solution contains two projects.
+* `gps-pump`: produces simulated messages from a tab-separated values file.
+* `gps-monitor`: consumes simulated messages and produces vehicles that have parked.
 
-* `gps-pump`
-  * This project contains a program that can publish GPS coordinates
-  * The program is written in Java and it takes an input file (in TSV format) as an argument. The program repeatedly pushes the content of the TSV file to a topic `gps-locations`
-* `processor`
-  * This is another Java project that uses Kafka Streams to process the incoming GPS coordinates and find the places where vehicles are most likely to park.
+The idea is that we'll start the `gps-monitor` and a console consumer of the final output topic, then start producing
+messages from the `gps-pump`.
 
-## Steps of the exercise
+### `gps-pump`
 
-### Start Kafka
+In your favorite editor, open file `iot-kafka/gps-pump/src/main/java/app/GpsDeviceSimulator.java`. Notice that it takes
+a Kafka producer and the data file name, which must be on the application's classpath.
 
-Unless you've already done so, follow start Kafka through docker (the instructions for this is in previous exercises).
+All it does is read the data file from beginning to end, streaming each literal, tab-delimited line as a Kafka message
+on the `gps-locations` topic, then restarts from the top each time we hit the end of the file.
 
-### Create the topics
+The file `iot-kafka/gps-pump/src/main/java/app/GpsDeviceSimulatorApp.java` simply contains the bootstrap logic to
+configure dependencies then instantiate and start the `GpsDeviceSimulator`.
 
-```
-docker-compose exec kafka /opt/kafka/bin/kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 --partitions 1 --topic gps-locations
-docker-compose exec kafka /opt/kafka/bin/kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 --partitions 1 --topic frequent-parking
-```
+### `gps-monitor`
 
-### Start the the `processor` project
+Now open file `iot-kafka/gps-monitor/src/main/java/app/GpsMonitor.java`. Notice that it uses a `StreamsBuilder` to
+create the stream processing topology that implements our business logic.
 
-Go to the `lesson-60-kafka-streams/instructions/iot-kafka-solution/processor` directory and run the build.
+1. The first step in our topology is to split the tab-delimited line into an array for downstream processing,
+   using `map`.
+2. Next, we use `filter` to keep only those messages that contain valid data & have a speed value of less than one,
+   meaning "parked".
+3. Then we use `map` to transform the "parked" record into a string form of a vehicle & location using the `toString()`
+   method of `LocationKey`.
+4. Now, we group by vehicle & location, and
+5. `count` them up, giving us the running count of the number of times a vehicle was parked at a location.
+6. Finally, we convert the counts from `Long` to `String` to abide by our serde's requirements,
+7. Convert the `KTable` of counts back to a `KStream`, and
+8. Produce those records on the configured output topic.
 
-```sh
-mvn clean package
-```
+We then build our `Topology`, and get a `KafkaStreams` reference to `start`, then run until the user hits enter.
 
-Now run the processor from the same directory.
+## Do it!
 
-```sh
-target/parking-processor
-```
+### Build both applications
 
-Leave this window running and open another terminal.
+Open a terminal in the `gps-pump` directory and issue the following command:
 
-### Run a console consumer
-
-We need a console consumer to see the end result when we start processing the data. 
-You've done this before, but let's make sure you have all the instructons. 
-
-Go to the `lesson-60-kafka-streams/instruction/docker` directory and run the following command:
-
-```sh
-docker-compose exec kafka /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic frequent-parking --from-beginning --property print.key=true
-```
-Notice how we are printing both the key as the value (as we did for the wordcount example).
-
-Leave this window open as well and start another terminal for the next steps.
-
-### Start the `gps-pump` project
-
-Go to the `lesson-60-kafka-streams/instructions/iot-kafka-solution/gps-pump` directory and build the project:
-
-```sh
-mvn clean package
+```shell
+$ docker run -it --rm -v "$(cd "$PWD/../../../.."; pwd)":/course-root -w /course-root/labs/06-Streaming/iot-kafka/gps-pump -v "$HOME/.m2/repository":/root/.m2/repository maven:3-jdk-11 ./mvnw clean package
 ```
 
-Next, run the project pointing passing the test data to the program:
+Similarly, open another terminal in the `gps-monitor` directory and build it:
 
-```sh
-target/gps-message-pump ../vehicle_1_1000.tsv
+```shell
+$ docker run -it --rm -v "$(cd "$PWD/../../../.."; pwd)":/course-root -w /course-root/labs/06-Streaming/iot-kafka/gps-monitor -v "$HOME/.m2/repository":/root/.m2/repository maven:3-jdk-11 ./mvnw clean package
 ```
 
-### Build the processor
+### Run everything
 
-### Where are we?
+Now, it's time to fire up Kafka, a console consumer of the final output topic, the `gps-monitor` and the `gps-pump`.
 
-We now have a program (`gps-pump`) producing GPS locations into a topic (`gps-locations`). 
-We also have a program processing these locations and producing events into another topic (`frequent-parking`) with the most likely places the various vehicles will park.
-Finally, we have a console consumer that prints out the end result.
+Open another new terminal in the lab's root directory, `06-Streaming`, and start the Kafka cluster:
 
-### See the result
-
-After some time, you should see some data being produced to the Kafka consumer. 
-E.g.:
-
-```sh
-120@9v6mqsk	24
-107@9v6mqss	6
-111@9v6mqeg	6
-22@9v6mm0m	9
-22@9v6mm6k	27
-22@9v6kvqb	27
-22@9v6kvq8	54
-22@9v6ku2s	27
-22@9v6ku45	603
-88@9uftzw9	514
+```shell
+$ docker-compose -f kafka-streaming.yaml up
 ```
 
-To understand the input you should take a look at the code. 
-The first column represents the key of the messages which is a combinatio of the vehicle id and the gehhash of its location.
+Once the log output from the above commands stops being written, open yet another terminal in the lab's root directory
+and create our topics then listen to the output topic using a console consumer:
 
-The second column represents the number of times the vehicle has been seen in that location.
+```shell
+$ docker-compose -f kafka-streaming.yaml exec kafka bash
+I have no name!@2ec21727cbdc:/$ for it in gps-locations frequent-parking; do kafka-topics.sh --boostrap-server kafka:9092 --create --topic $it; done
+I have no name!@2ec21727cbdc:/$ kafka-console-consumer.sh --boostrap-server kafka:9092 --topic frequent-parking --property print.key=true
+```
+
+That terminal will now be quiet until our `gps-monitor` produces some messages on the `frequent-parking` topic.
+
+Return to the terminal in which you built the `gps-monitor` project, and fire it up:
+
+```shell
+$ docker run --network "$(cd ../.. && basename "$(pwd)" | tr '[:upper:]' '[:lower:]')_default" --rm -it -v "$PWD:/pwd" -w /pwd openjdk:11 java -jar target/gps-monitor*.jar
+```
+
+Next, return to the terminal in which you built the `gps-pump` project, and start it:
+
+```shell
+$ docker run --network "$(cd ../.. && basename "$(pwd)" | tr '[:upper:]' '[:lower:]')_default" --rm -it -v "$PWD:/pwd" -w /pwd openjdk:11 java -jar target/gps-pump*.jar
+```
+
+You should see activity in the two project terminals. After some time, you'll see activity in the console consumer
+terminal similar to the following:
+
+```shell
+88@9uftzw3	6
+88@9uftzqs	24
+88@9ufw1jp	30
+120@9v6mjy8	12
+111@9v6mjwn	12
+120@9v6mjwn	6
+111@9v6mjwp	6
+120@9v6mjwp	6
+111@9v6mjy2	6
+111@9v6mjy0	6
+120@9v6mjy3	24
+...
+```
+
+This output is showing you the count of a given vehicle in a given location.
+
+Congratulations, you've completed this lab!

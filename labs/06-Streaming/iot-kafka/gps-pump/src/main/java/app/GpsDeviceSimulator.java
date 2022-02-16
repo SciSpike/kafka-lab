@@ -48,7 +48,6 @@ public class GpsDeviceSimulator {
               }
               System.out.println("Sent: " + line);
             } catch (Exception e) {
-              System.out.println("Error reading file or sending message: " + e.getMessage());
               try {
                 reset();
               } catch (Exception e2) {
