@@ -44,8 +44,7 @@ The command above will build and package our uber jar with the application and a
 
 ## Run Kafka
 
-In order to run our app, we first need to run Kafka. First, ensure that you've shut down any prior docker
-containers.
+In order to run our app, we first need to run Kafka. First, ensure that you've shut down any prior docker containers.
 
 Next, open a new terminal in the lab's root directory & run the Docker Compose stack using the `kafka-streaming.yaml`
 configuration file:
@@ -74,9 +73,11 @@ container:
 $ docker-compose -f kafka-streaming.yaml exec kafka bash
 ```
 
-At the subsequent prompt, start a Kafka console consumer:
+At the subsequent prompt, create the topics & start a Kafka console consumer:
+
 ```shell
-I have no name!@c07eea6aed61:/$ kafka-console-consumer.sh --bootstrap-server kafka:9092 --topic stream-output --from-beginning
+I have no name!@c07eea6aed61:/$ for it in input output; do kafka-topics.sh --create --bootstrap-server kafka:9092 --topic stream-$it; done
+I have no name!@c07eea6aed61:/$ kafka-console-consumer.sh --bootstrap-server kafka:9092 --topic stream-output --from-beginning --property print.key=true
 ```
 
 In another terminal, start a bash session and pump some lines into the kafka console producer:
@@ -87,21 +88,18 @@ I have no name!@c07eea6aed61:/$ cat /lab-root/ickle-pickle-tickle.txt | kafka-co
 ```
 
 This should produce the output count in the terminal where we're running the console consumer:
+
 ```shell
-went:2
-for:2
-ride:2
-a:4
-flying:2
-shoe:2
-hooray:2
-what:2
-fun:2
-it's:2
-time:2
-said:2
-captain:2
+went	1
+for	1
+ride	1
+a	2
 ...
+ickle	8
+pickle	8
+tickle	8
+me	20
+too	7
 ```
 
 For fun, you can submit the full text of Leo Tolstoy's "War & Peace"!

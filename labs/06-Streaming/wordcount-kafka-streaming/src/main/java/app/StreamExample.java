@@ -27,22 +27,34 @@ public class StreamExample {
     // Next, lets specify which stream we consume from
     KStream<String, String> stream = builder.stream(props.getProperty("topics.input"));
 
-    // This starts the processing topology
+    // This starts the processing topology -- the println statements allow you to see that things are happening
     stream
         // convert each message list of words
-        .flatMapValues(it -> Arrays.asList(regex.split(it.trim().toLowerCase())))
+        .flatMapValues(val -> {
+          System.out.println("flatMapValues:" + val);
+          return Arrays.asList(regex.split(val.trim().toLowerCase()));
+        })
         // only keep non-blank words
-        .filter((__, value) -> value.trim().length() > 0)
-        // We're not really interested in the key in the incoming messages; we only want the values
-        .map((__, value) -> new KeyValue<>(value, value))
+        .filter((__, val) -> {
+          System.out.println("filter:" + val);
+          return val.trim().length() > 0;
+        })
+        // we're not really interested in the key in the incoming messages; we only want the values
+        .map((__, val) -> {
+          System.out.println("map:" + val);
+          return new KeyValue<>(val, val);
+        })
         // now we need to group them by the word
         .groupByKey()
         // let's keep a ktable count called Counts
         .count(Materialized.as("Counts"))
         // convert the KTable back to a stream
         .toStream()
-        // format the value to be "$word:$count"
-        .map((key, val) -> new KeyValue<>(key, String.format("%s:%s", key, val)))
+        // convert values to strings because we're using string serialization
+        .mapValues(val -> {
+          System.out.println("mapValues:" + val);
+          return val.toString();
+        })
         // and finally we pipe the output values into the stream-output topic
         .to(props.getProperty("topics.output"));
 
