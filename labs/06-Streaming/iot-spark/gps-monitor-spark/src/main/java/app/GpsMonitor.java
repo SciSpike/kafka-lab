@@ -13,9 +13,9 @@ import java.io.IOException;
 import java.util.*;
 import java.util.regex.Pattern;
 
-public class SparkKafka {
+public class GpsMonitor {
   private static boolean inDocker = new File("/.dockerenv").exists();
-  private static Pattern regex = Pattern.compile("(\\s|\\.|\\?|!|;|:|-|/|,|\")+");
+  private static Pattern regex = Pattern.compile("\t");
 
   public static void main(String[] args) throws IOException, InterruptedException {
     var props = getProperties();
@@ -35,13 +35,44 @@ public class SparkKafka {
             ConsumerStrategies.<String, String>Subscribe(topics, toMap(props)));
 
     stream
-        // split lines to words
-        .flatMap(it -> Arrays.asList(regex.split(it.value().trim().toLowerCase())).iterator())
-        // only keep non-blank words, just in case any got in there
-        .filter(it -> it.trim().length() > 0)
+        // split lines
+        .map(
+            record -> {
+              var line = record.value();
+              System.out.println("splitting: " + line);
+              return regex.split(line.trim().toLowerCase());
+            })
+        // only keep positions where speed is less than 1, meaning "parked"
+        .filter(
+            array -> {
+              String record = Arrays.toString(array);
+              try {
+                // ensure record contains valid data where expected; should really check that these
+                // are valid lats & longs, but we'll just go with it if they're parsable as doubles
+                Double.parseDouble(array[4]);
+                Double.parseDouble(array[5]);
+                if (Double.parseDouble(array[2]) < 1.0) {
+                  // then this reading represents a "parked" record
+                  System.out.println("keeping parking record: " + record);
+                  return true;
+                }
+                // else ignore
+                return false;
+              } catch (Exception x) {
+                System.out.println("filtering out bad record: " + record);
+                return false;
+              }
+            })
         // convert to pairs where key is word and initial count is 1
-        .mapToPair(it -> new Tuple2<>(it, 1L))
-        // update total of occurrences of each word
+        .mapToPair(
+            array -> {
+              var key =
+                  new LocationKey(
+                          array[0], Double.parseDouble(array[4]), Double.parseDouble(array[5]))
+                      .toString();
+
+              return new Tuple2<>(key, 1L);
+            })
         .reduceByKey(Long::sum)
         .print();
 
@@ -51,7 +82,7 @@ public class SparkKafka {
 
   private static Properties getProperties() throws IOException {
     var props = new Properties();
-    try (var stream = SparkKafka.class.getClassLoader().getResourceAsStream("streams.properties")) {
+    try (var stream = GpsMonitor.class.getClassLoader().getResourceAsStream("streams.properties")) {
 
       props.load(stream);
 

@@ -1,9 +1,8 @@
 # IoT Kafka Stream Solution
 
-In this example, we process real-world vehicle IoT data. Our data is in file `vehicle_1_1000.tsv`. This file contains
-first 1000 rows of the vehicle sensor data representing car movements.
-
-The data stored is in a tab-separated file. The values represent observed position of the tracked vehicles.
+In this example, we process real-world vehicle IoT data. Our data is in a tab-separated values
+file `iot-kafka/gps-pump/src/main/resources/data.tsv`. This file contains rows of vehicle sensor data representing car
+movements.
 
 ## Data Schema
 

@@ -1,234 +1,109 @@
-# IoT
+# IoT Spark Stream Solution
 
-## Introduction
+> NOTE: Please complete the `iot-kafka` lab before trying this lab, as this lab reuses the data producer from that one.
 
-In this example, we process real-world vehicle IoT data. Our data is in file `vehicle_1_1000.tsv`. This file contains first 1000 rows of the vehicle sensor data representing car movements..
+This example reuses the `gps-pump`, and therefore, the sample data, provided in the `iot-kafka` lab.
 
-The data stored is in a tab-separated file. The values represents observed position of the tracked vehicles
+We're going to do the same as that lab, count the number of times a vehicle parked in a certain position, except we'll
+use Spark streaming to do it, being fed from a Kafka topic.
 
-### Data Schema
+## Lab
 
-The data fields are:
+There is only one project in this lab.
 
-- Col 1: Device ID (unique for each vehicle)
-- Col 2: Time of the observation (in UTC)
-- Col 3: Speed of the vehicle
-- Col 4: The compass direction of the vehicle
-- Col 5: The longitude of the GPS coordinates
-- Col 6: The latitude of the GPS coordinates
+* `gps-monitor-spark`: consumes simulated messages and produces vehicles that have parked.
 
-#### Accuracy of GPS Coordinates
+The idea is that we'll start the `gps-monitor-spark`, then start producing messages from the `gps-pump`.
 
-For GPS coordinates, about 100 meters accuracy is roughly coordinates rounded to 3 decimal places.
+### `gps-monitor-spark`
 
-See [GIS Accuracy](https://gis.stackexchange.com/questions/8650/measuring-accuracy-of-latitude-and-longitude) for a detailed explanation.
+Using your favorite editor, open the file `iot-kafka/gps-monitor-spark/src/main/java/app/GpsMonitor.java`.
 
-## The Goal
+First, we instantiate a `JavaStreamingContext` given a `SparkConf` & a `Duration`. Then, we use `KafakUtils`, from
+Spark's Kafka streaming connector, to create a stream of lines coming in from the configured input topic. The Kafka
+properties come in via resource `streams.properties`.
 
-The goal is to count the number of times a car is observed parked at the same location with accuracy of about 100 meters.
+Next, we establish the `Topology` of our stream by invoking methods on the stream that represent the processing logic
+that we want to perform.
 
-## The Solution
+* `map` transforms the incoming messages from `ConsumerRecord`s containing a tab-separated values string into arrays of
+  strings.
+* `filter` takes care to ensure that the data we get is in the expected format _and_ represents a "parked" record by
+  ensuring that the vehicle's speed is less than `1.0`. Any poorly formatted or other records are discarded.
+* `mapToPair` prepares us to count things up by converting the incoming "parked" record into a tuple of vehicle id plus
+  geohash and an initial count of `1`.
+* `reduceByKey` uses the tuples produced in the prior step to count each unique combination of vehicle id & geohash,
+  yielding our desired values.
+* `print` simply prints those counts.
 
-Let's get started! We will begin with the Spark Streaming program.
+> NOTE: this topology isn't actually executed until the stream is started and lines are presented to the stream.
 
-## Spark Streaming Program
+## Do it!
 
-Our program will read the data from a Kafka stream and print the number of times a vehicle has been observed parked at the same location (within 100 meters).
+### Build the consumer application
 
-### Define Vehicle data
+Open a new terminal in the `iot-spark/gps-monitor-spark` directory and build it:
 
-```scala
-case class VehicleStr(id: String, timeUtc: String, speed: String, compassDir: String, longitude: String, latitude: String)
+```shell
+$ docker run -it --rm -v "$(cd "$PWD/../../../.."; pwd)":/course-root -w /course-root/labs/06-Streaming/iot-spark/gps-monitor-spark -v "$HOME/.m2/repository":/root/.m2/repository maven:3-jdk-11 ./mvnw clean package
 ```
 
-### Rounding Function for GPS Coordinates
+### Run everything
 
-```scala
-  def roundAccuracy(coordinate: String, decimalPoints: Int): String = {
-    val Array(intPart, decimalPart) = coordinate.split("\\.")
-    intPart + "." + decimalPart.substring(0, decimalPoints)
-  }
+Now, it's time to fire up Kafka & Spark, the `gps-monitor-spark` and the `gps-pump`.
+
+First, ensure any prior Kafka clusters from any previous labs are stopped.
+
+Open another new terminal in the lab's root directory, `06-Streaming`, and start the Kafka & Spark cluster:
+
+```shell
+$ docker-compose -f spark-streaming.yaml up
 ```
 
-### Function for Updating State
+Once the log output from the above commands stops being written, open yet another terminal in the lab's root directory
+and create our topics then listen to the output topic using a console consumer:
 
-This is for the sate update at the end of each interval.
-
-```scala
-  /*
-   * State update function. The state is a collection of keys and values.
-   * Key: (id, long, lat)
-   * Value: number of times parked
-   */
-  def updateParkedVehicles(batchTime: Time, key: (String, String, String),
-      value: Option[Long], state: State[Long]):
-    Option[((String, String, String), Long)] = {
-    val noOfTimesParked = value.getOrElse(0L) + state.getOption.getOrElse(0L)
-    val output = (key, noOfTimesParked)
-    state.update(noOfTimesParked)
-    Some(output)
-  }
+```shell
+$ docker-compose -f spark-streaming.yaml exec kafka bash
+I have no name!@2ec21727cbdc:/$ kafka-topics.sh --boostrap-server kafka:9092 --create --topic gps-locations
 ```
 
-### Key Parts of the `main` Function
+Return to the terminal in which you built the `gps-monitor-spark` project, and submit the Spark job:
 
-See the comments in the code for explanations.
-
-#### Configuration
-
-```scala
-
-    // Show only errors in console
-    val rootLogger = Logger.getRootLogger()
-    rootLogger.setLevel(Level.ERROR)
-
-    // Consume command line parameters
-    val Array(brokers, topics, interval) = args
-
-    // Create Spark configuration
-    val sparkConf = new SparkConf().setAppName("SparkKafkaIoT")
-
-    // Create streaming context, with batch duration in ms
-    val ssc = new StreamingContext(sparkConf, Duration(interval.toLong))
-    ssc.checkpoint("./output")
-
-    // Managing state
-    val stateSpec = StateSpec.function(updateParkedVehicles _)
-
-    // Create a set of topics from a string
-    val topicsSet = topics.split(",").toSet
-
-    // Define Kafka parameters
-    val kafkaParams = Map[String, Object](
-      "bootstrap.servers" -> brokers,
-      "key.deserializer" -> classOf[StringDeserializer],
-      "value.deserializer" -> classOf[StringDeserializer],
-      "group.id" -> "use_a_separate_group_id_for_each_stream",
-      "auto.offset.reset" -> "latest",
-      "enable.auto.commit" -> (false: java.lang.Boolean))
+```shell
+$ docker-compose -f spark-streaming.yaml exec spark-master bash
+I have no name!@2ec21727cbdc:/$ spark-submit --master spark://spark-master:7077 --class app.GpsMonitor /lab-root/iot-spark/gps-monitor-spark/target/gps-monitor-spark-1.0.0-SNAPSHOT.jar
 ```
 
-#### Creating and Processing the Stream
+After successful submission, that terminal will now periodically produce empty output until we start pumping data into
+the Kafka topic with the `gps-pump`.
 
-```scala
-    // Create a Kafka stream
-    val stream = KafkaUtils.createDirectStream[String, String](
-      ssc, PreferConsistent, Subscribe[String, String](topicsSet,kafkaParams))
+Next, return to the terminal in which you built the `iot-kafka/gps-pump` project, and start it:
 
-    // Get messages - lines of text from Kafka
-    val lines = stream.map(consumerRecord => consumerRecord.value)
-
-    // Accuracy for GPS coordinates
-    // https://gis.stackexchange.com/questions/8650/measuring-accuracy-of-latitude-and-longitude
-    val hundredMeters = 3
-
-    // We round the observations within 100 meters
-    val vehicleObservations = lines.map(_.split("\t")).
-      map(strings => VehicleStr(strings(0), strings(1), strings(2), strings(3),
-        roundAccuracy(strings(4), hundredMeters), roundAccuracy(strings(5), hundredMeters)))
-
-    val parkedVehicles = vehicleObservations.filter(_.speed == "0")
-
-    val parkingCountsRaw = parkedVehicles.map(v => ((v.id, v.longitude, v.latitude), 1)).countByValue()
-
-    // parkingCountsRaw are tuples with the structure:
-    // (((id, long, lat), 1), timesParked)
-
-
-    // Drop the "1" field
-    // The structure is now a KV tuple ((id, long, lat), timesParked)
-    val parkingCounts = parkingCountsRaw.map(pcr => ((pcr._1._1._1, pcr._1._1._2, pcr._1._1._3), pcr._2))
+```shell
+$ docker run --network "$(cd ../.. && basename "$(pwd)" | tr '[:upper:]' '[:lower:]')_default" --rm -it -v "$PWD:/pwd" -w /pwd openjdk:11 java -jar target/gps-pump*.jar
 ```
 
-#### Updating the State
+You should see activity in the two project terminals. Return your attention to the terminal running the Spark job. You
+should see output similar to the following:
 
-```scala
-    // Applying the state update
-    val parkingCountsStream = parkingCounts.mapWithState(stateSpec)
-
-    // The state represented as a DStream - we will use it to check the updates
-    val parkingSnaphotsStream = parkingCountsStream.stateSnapshots()
-
-    // This will print 10 values from the state DStream
-    // Notice how the timesParked for a vehicle at a location accumulate as we process more data
-    parkingSnaphotsStream.print()
-
-    // A real app may update a database which feeds a dashboard...
-```
-
-#### Starting the Stream Processing
-
-```scala
-    // Start stream processing
-    ssc.start()
-    ssc.awaitTermination()
-```
-
-## Build and Package
-
-In the terminal in the Spark program directory, run `sbt assembly`. This will create the jar file, which we will later deploy to Spark.
-
-## Run docker-compose
-
-Run `docker-compose up` from the `docker` directory.
-
-## Create Topic
-
-Create topic `vehicle-observations`
-
-```
-$ docker-compose exec kafka /opt/kafka/bin/kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 --partitions 1 --topic vehicle-observations
-```
-
-## Producer
-
-Run the producer.
-
-```
-$ docker-compose exec kafka /opt/kafka/bin/kafka-console-producer.sh --broker-list kafka:9092 --topic vehicle-observations
-```
-
-## Deploy
-
-```
-$ mv target/scala-2.11/spark-kafka-iot.jar ../docker/spark/
-```
-
-Deploy into Spark. We will use 10 seconds as our interval.
-
-```
-$ docker-compose exec master spark-submit \
-  --master spark://master:7077 \
-  /app/spark-kafka-iot.jar \
-  kafka:9092 vehicle-observations 10000
-```
-
-## Run and Observe
-
-Open the file `vehicle_1_1000.tsv`. Copy some rows from the file. Paste copied rows from the file in the producer. Observe the output in the Spark terminal. Do it a couple of times.
-
-Our programs prints the state of the system (by default print will produce 10 lines).
-
-You will see the output like this:
-
-```
+```shell
 -------------------------------------------
-Time: 1497802830000 ms
+Time: 1645132250000 ms
 -------------------------------------------
-((88,-97.409,27.765),8)
-((111,-97.831,30.445),2)
-((111,-97.832,30.445),2)
-((111,-97.835,30.444),4)
-((111,-97.834,30.445),2)
-((120,-97.831,30.445),4)
-((120,-97.831,30.446),2)
-((88,-97.403,27.764),2)
-((120,-97.830,30.446),58)
-((88,-97.402,27.765),80)
+(120@9v6mjwp,1)
+(111@9v6mjwp,1)
+(111@9v6mjy2,1)
+(107@9v6mjy9,11)
+(111@9v6mjwn,2)
+(111@9v6mjy0,1)
+(120@9v6mjy8,2)
+(88@9ufw1jp,5)
+(120@9v6mjwn,1)
+(120@9v6mjy9,15)
+...
 ```
 
-This is stateful stream processing - notice how the state of the system gets updated with more data consumed. The last field in the tuple is the number of times we observed the vehicle parked at this location.
+This output is showing you the count of a given vehicle in a given location.
 
-## Done
-
-Congratulations! You now have a Spark Streaming IoT program.
+Congratulations, you've completed this lab!
