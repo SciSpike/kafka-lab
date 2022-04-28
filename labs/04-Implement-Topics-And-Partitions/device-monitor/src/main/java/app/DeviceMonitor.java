@@ -32,6 +32,9 @@ public class DeviceMonitor {
 
       for (var record : records) {
         String key = record.key();
+        if (!lastSeenMap.containsKey(record.key())) {
+          producer.send(createOnlineMessage(key, topic));
+        }
         lastSeenMap.put(record.key(), new Date());
         System.out.println("Received heartbeat from: " + key + " value: " + record.value());
 
@@ -115,7 +118,7 @@ public class DeviceMonitor {
   }
 
   private static ProducerRecord<String, String> createOnlineMessage(String key, String topic) {
-    return new ProducerRecord<>(topic, key, key + " is back online");
+    return new ProducerRecord<>(topic, key, key + " was online @ " + new Date());
   }
 
   public static class Tuple<T1,T2> {
