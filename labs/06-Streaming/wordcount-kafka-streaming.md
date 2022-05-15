@@ -40,6 +40,8 @@ the following command:
 $ docker run -it --rm -v "$(cd "$PWD/../.."; pwd)":/course-root -w "/course-root/$(basename $(cd "$PWD/.."; pwd))/$(basename "$PWD")" -v "$HOME/.m2/repository":/root/.m2/repository maven:3-jdk-11 ./mvnw clean package
 ```
 
+On a windows machine, you have to replace the `$PWD` with the current directory and the `$HOME` with a directory where you have the `.m2` folder.
+
 The command above will build and package our uber jar with the application and all of its dependencies.
 
 ## Run Kafka
@@ -63,6 +65,9 @@ Now, let's start our streaming application connecting to Kafka running in our Do
 ```shell
 $ docker run --network "$(cd .. && basename "$(pwd)" | tr '[:upper:]' '[:lower:]')_default" --rm -it -v "$PWD:/pwd" -w /pwd openjdk:11 java -jar target/wordcount-kafka-solution-*.jar
 ```
+
+On a windows machine, you have to replace the `$PWD` with the current directory and the `$HOME` with a directory where you have the `.m2` folder.
+
 
 Now that our Kafka streaming application is running, it's time to feed it some input lines via the Kafka topic.
 

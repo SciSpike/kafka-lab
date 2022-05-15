@@ -80,11 +80,17 @@ Open a terminal in the `gps-pump` directory and issue the following command:
 $ docker run -it --rm -v "$(cd "$PWD/../../../.."; pwd)":/course-root -w /course-root/labs/06-Streaming/iot-kafka/gps-pump -v "$HOME/.m2/repository":/root/.m2/repository maven:3-jdk-11 ./mvnw clean package
 ```
 
+On a windows machine, you have to replace the `$PWD` with the current directory and the `$HOME` with a directory where you have the `.m2` folder.
+
+
 Similarly, open another terminal in the `gps-monitor` directory and build it:
 
 ```shell
 $ docker run -it --rm -v "$(cd "$PWD/../../../.."; pwd)":/course-root -w /course-root/labs/06-Streaming/iot-kafka/gps-monitor -v "$HOME/.m2/repository":/root/.m2/repository maven:3-jdk-11 ./mvnw clean package
 ```
+
+On a windows machine, you have to replace the `$PWD` with the current directory and the `$HOME` with a directory where you have the `.m2` folder.
+
 
 ### Run everything
 
@@ -113,11 +119,15 @@ Return to the terminal in which you built the `gps-monitor` project, and fire it
 $ docker run --network "$(cd ../.. && basename "$(pwd)" | tr '[:upper:]' '[:lower:]')_default" --rm -it -v "$PWD:/pwd" -w /pwd openjdk:11 java -jar target/gps-monitor*.jar
 ```
 
+On a windows machine, you have to replace the `$PWD` with the current directory and the `$HOME` with a directory where you have the `.m2` folder.
+
 Next, return to the terminal in which you built the `gps-pump` project, and start it:
 
 ```shell
 $ docker run --network "$(cd ../.. && basename "$(pwd)" | tr '[:upper:]' '[:lower:]')_default" --rm -it -v "$PWD:/pwd" -w /pwd openjdk:11 java -jar target/gps-pump*.jar
 ```
+
+On a windows machine, you have to replace the `$PWD` with the current directory and the `$HOME` with a directory where you have the `.m2` folder.
 
 You should see activity in the two project terminals. After some time, you'll see activity in the console consumer
 terminal similar to the following:

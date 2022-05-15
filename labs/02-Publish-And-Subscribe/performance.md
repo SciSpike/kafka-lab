@@ -37,7 +37,7 @@ PS> Meassure-Command { java -jar target/MY.jar}
 
 If not, here is a a batch file that you can use: 
 
-```batch
+```bat
 @echo off
 @setlocal
 
