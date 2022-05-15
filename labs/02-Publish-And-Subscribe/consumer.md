@@ -84,7 +84,12 @@ that should be explored for a production environment.
    will see the consumer output the messages almost immediately. The consumer will run indefinitely until you
    press `ctrl-c` in the terminal window.
 
-7. Finally, change back into the `docker/` directory in order to shut down the Kafka and Zookeeper servers.
+7. [OPTIONAL] Play with the performance.
+   Before we shut down Kafka, you may want to spend some time playing with the perfomance of the programs. 
+   We have created an optional lab for this which you can run here before going to step 8 and shutting down Kafka.
+   Here is a link to the lab.
+
+8. Finally, change back into the `docker/` directory in order to shut down the Kafka and Zookeeper servers.
 
     ```
     $ docker-compose down
