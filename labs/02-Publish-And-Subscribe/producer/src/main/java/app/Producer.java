@@ -43,7 +43,6 @@ public class Producer {
                 "user_id_" + i, // key
                 "some_value_" + System.nanoTime());
         producer.send(user); // value
-        System.out.println(user);
 
         if (i > 0 && i % 100 == 0) {
           String event =
@@ -54,7 +53,7 @@ public class Producer {
                   "global-events", // topic
                   event);
           producer.send(global); // value
-          System.out.println(global);
+          System.out.println("Producting a global message. Message #" + i);
 
           producer.flush();
           System.out.println("flushed on " + i);

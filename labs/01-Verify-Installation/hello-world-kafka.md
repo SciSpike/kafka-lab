@@ -17,52 +17,6 @@ isolated CPU, memory, and network
 resources. [Install Docker Desktop by following the directions appropriate for your operating system.](https://www.docker.com/get-started)
 Make sure that you can run both the `docker` and `docker-compose` command from the terminal.
 
-## Aliases (optional)
-
-Because we use docker and docker-compose, the commands to run the kafka CLI can be tedious to type.
-
-We have all of the commands listed in the exercise below, so you can simply copy and paste, but as you get more
-advanced, you may want to experiment with the CLI.
-
-One way to make this simpler is to alias your commands. When we run the Kafka commands in the running docker container,
-we reach into the container and run a command.
-
-This means that all of our commands are preceded with the following prefix:
-`docker-compose exec kafka`
-
-You may want to alias these commands. In Linux and Mac, you can simply create aliases in your terminal.
-
-```
-alias kt='docker-compose exec kafka kafka-topics.sh --bootstrap-server :9092'
-alias kp='docker-compose exec kafka kafka-console-producer.sh --bootstrap-server :9092'
-alias kc='docker-compose exec kafka kafka-console-consumer.sh --bootstrap-server :9092'
-```
-
-If you use `bash` and want these aliases to always be available, paste the above into your `~/.bash_profile`
-or `~/.bashrc` file.
-
-When you start new shells, you can now simply run:
-
-```bash
-$ kt {OPTIONS} command
-```
-
-To update your current shell (so that you don't have to close your terminal and start a new one), run:
-
-```bash
-$ source ~/.bash_profile
-```
-
-Another alternative is to run a bash shell inside the Docker container:
-
-```bash
-$ docker-compose exec kafka /usr/bin/env bash
-
-bash-4.3#
-```
-
-You are now running inside the container and all the commands should work (and autocomplete).
-
 ## Instructions
 
 1. Open a terminal in this lab directory: `labs/01-Verify-Installation`.
@@ -114,6 +68,12 @@ The first time you run this command, it will take a while to download the approp
 
 7. In the _producer_ client terminal, type a few more messages that you should now see echoed in the _consumer_
    terminal.
+
+8. [OPTIONAL] You may want to try a bit more text to see how Kafka is able to keep up with a larger load of text. 
+   For example, you may try to paste the complete work of "War and Peace".
+   You can find the text here: https://www.gutenberg.org/files/2600/2600-0.txt.
+   To do so, simply copy the complete text from a web browser and paste it into the kafka-producer.
+   You may notice that the consumer is processing the text in batches as well as having no problem kepping up with the paste speed of your terminal.
 
 8. Stop the producer and consumer terminals by issuing `ctrl-c`.
 
