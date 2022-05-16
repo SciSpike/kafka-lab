@@ -70,7 +70,7 @@ public class DeviceMonitor {
           }
         },
         60 * 1000,
-        60 * 1000);
+        5 * 1000);
   }
 
   private static KafkaConsumer<String, String> createConsumer() throws IOException {
