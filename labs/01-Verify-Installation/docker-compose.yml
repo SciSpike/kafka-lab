@@ -9,6 +9,8 @@ services:
       - "${PWD}/.data:/bitnami"
     environment:
       - ALLOW_ANONYMOUS_LOGIN=yes
+    networks:
+      - lab01
   kafka:
     image: docker.io/bitnami/kafka:3
     ports:
@@ -20,3 +22,9 @@ services:
       - ALLOW_PLAINTEXT_LISTENER=yes
     depends_on:
       - zookeeper
+    networks:
+      - lab01
+
+networks:
+  lab01:
+    driver: bridge
