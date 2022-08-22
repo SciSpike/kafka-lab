@@ -33,7 +33,7 @@ Lastly, for convenience, we wait for the user to hit enter to `close` the stream
 ### Build the streaming app
 
 Now that we have coded our app, we need to build it. Fortunately, we can use `docker` for this so that we don't have to
-have `maven` and its prerequisites installed locally. Open a terminal in the lab's `wordcount-spark` directory and issue
+have `maven` and its prerequisites installed locally. Open a terminal in the lab's `wordcount-kafka-streaming` directory and issue
 the following command:
 
 ```shell
