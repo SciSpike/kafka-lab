@@ -88,7 +88,14 @@ If you are on a Mac (or in linux), this should work:
    $ docker run -it --rm -v "$(cd "$PWD/../.."; pwd)":/course-root -w "/course-root/$(basename $(cd "$PWD/.."; pwd))/$(basename "$PWD")" -v "$HOME/.m2/repository":/root/.m2/repository maven:3-jdk-11 ./mvnw clean package
    ```
 
-   On a windows machine, you have to replace the `$PWD` with the current directory and the `$HOME` with a directory where you have the `.m2` folder.
+On a Windows machine, the `$PWD` and `pwd` commands may not work (unless you run in a Unix-compliant shell). PWD means `print current directory`. 
+
+The trick we use above is to map the directory two steps down from the current (which is where the labs are installed on your machine). 
+So say you had our labs installed in a directory called `/tmp/MyKafkaLabs`, you are now in the directory `/tmp/MyKafkaLabs/kafka-lab/labs/02-Publish-And-Subscribe`.
+The script `"$(cd "$PWD/../.."; pwd)"` simply out`puts the path two steps down from here, which would be `/tmp/MyKafkaLabs/kafka-lab`. 
+
+The next thing to look out for on a Windows machine is the use of `$HOME`. 
+This simply means your home directory. You can always replace `$HOME` with your home directory.
 
 7. With the producer now built, run it with the following command:
 
