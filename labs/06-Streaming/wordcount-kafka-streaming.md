@@ -30,41 +30,6 @@ our `Topology` and hook it up to Kafka via our Kafka client properties, then `st
 
 Lastly, for convenience, we wait for the user to hit enter to `close` the stream and exit.
 
-## Start Kafka
-
-### Start containers
-
-In order to run our app, we first need to run Kafka. First, ensure that you've shut down any prior docker containers.
-
-Next, open a new terminal in the lab's root directory & run the Docker Compose stack using the `kafka-streaming.yaml`
-configuration file:
-
-```shell
-$ docker-compose -f kafka-streaming.yaml up
-```
-
-You will see logs from all the containers that are launched as part of the solution. Once the terminal stops reflecting
-new output, the infrastructure is initialized.
-
-### Create topics and start the consumer
-
-In yet another terminal, change into the lab's root directory again and this time, start a bash session in the _kafka_
-container:
-
-```shell
-$ docker-compose -f kafka-streaming.yaml exec kafka bash
-```
-
-At the subsequent prompt, create the topics & start a Kafka console consumer:
-
-```shell
-I have no name!@c07eea6aed61:/$ for it in input output; do kafka-topics.sh --create --bootstrap-server kafka:9092 --topic stream-$it; done
-I have no name!@c07eea6aed61:/$ kafka-console-consumer.sh --bootstrap-server kafka:9092 --topic stream-output --from-beginning --property print.key=true
-```
-
-
-## Streaming Application
-
 ### Build the streaming app
 
 Now that we have coded our app, we need to build it. Fortunately, we can use `docker` for this so that we don't have to
@@ -79,7 +44,21 @@ On a windows machine, you have to replace the `$PWD` with the current directory 
 
 The command above will build and package our uber jar with the application and all of its dependencies.
 
-### Start our streaming application
+## Run Kafka
+
+In order to run our app, we first need to run Kafka. First, ensure that you've shut down any prior docker containers.
+
+Next, open a new terminal in the lab's root directory & run the Docker Compose stack using the `kafka-streaming.yaml`
+configuration file:
+
+```shell
+$ docker-compose -f kafka-streaming.yaml up
+```
+
+You will see logs from all the containers that are launched as part of the solution. Once the terminal stops reflecting
+new output, the infrastructure is initialized.
+
+## Start our streaming application
 
 Now, let's start our streaming application connecting to Kafka running in our Docker environment:
 
@@ -89,12 +68,22 @@ $ docker run --network "$(cd .. && basename "$(pwd)" | tr '[:upper:]' '[:lower:]
 
 On a windows machine, you have to replace the `$PWD` with the current directory and the `$HOME` with a directory where you have the `.m2` folder.
 
-## Stream data
-
-### Run a kafka-console-producer
 
 Now that our Kafka streaming application is running, it's time to feed it some input lines via the Kafka topic.
 
+In yet another terminal, change into the lab's root directory again and this time, start a bash session in the _kafka_
+container:
+
+```shell
+$ docker-compose -f kafka-streaming.yaml exec kafka bash
+```
+
+At the subsequent prompt, create the topics & start a Kafka console consumer:
+
+```shell
+I have no name!@c07eea6aed61:/$ for it in input output; do kafka-topics.sh --create --bootstrap-server kafka:9092 --topic stream-$it; done
+I have no name!@c07eea6aed61:/$ kafka-console-consumer.sh --bootstrap-server kafka:9092 --topic stream-output --from-beginning --property print.key=true
+```
 
 In another terminal, start a bash session and pump some lines into the kafka console producer:
 
@@ -118,18 +107,11 @@ me	20
 too	7
 ```
 
-### A larger data set
-
 For fun, you can submit the full text of Leo Tolstoy's "War & Peace"!
 
 ```shell
 I have no name!@c07eea6aed61:/$ cat /lab-root/war-and-peace.txt | kafka-console-producer.sh --bootstrap-server kafka:9092 --topic stream-input
 ```
-
-
-## Eplilogue 
-
-### Shutdown
 
 In the lab's root directory, you can now bring down the cluster with the command
 
