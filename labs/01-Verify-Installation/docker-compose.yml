@@ -6,7 +6,7 @@ services:
     ports:
       - "2181:2181"
     volumes:
-      - "${PWD}/.data:/bitnami"
+      - "zookeeper_data:/bitnami"
     environment:
       - ALLOW_ANONYMOUS_LOGIN=yes
     networks:
@@ -16,15 +16,19 @@ services:
     ports:
       - "9092:9092"
     volumes:
-      - "${PWD}/.data:/bitnami"
+      - "kafka_data:/bitnami"
     environment:
-      - KAFKA_CFG_ZOOKEEPER_CONNECT=host.docker.internal:2181
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
       - ALLOW_PLAINTEXT_LISTENER=yes
       - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092
     depends_on:
       - zookeeper
     networks:
       - lab01
+
+volumes:
+  kafka_data:
+  zookeeper_data:
 
 networks:
   lab01:

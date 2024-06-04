@@ -1,12 +1,10 @@
-version: "3"
-
 services:
   zookeeper:
     image: docker.io/bitnami/zookeeper:3.7
     ports:
       - "2181:2181"
     volumes:
-      - "${PWD}/.data:/bitnami"
+      - "zookeeper_data:/bitnami"
     environment:
       - ALLOW_ANONYMOUS_LOGIN=yes
   kafka:
@@ -15,8 +13,8 @@ services:
       - "9092:9092"
       - "9093:9093"
     volumes:
-      - "${PWD}/.data:/bitnami"
-      - "${PWD}:/lab-root"
+      - "kafka_data:/bitnami"
+      - ".:/lab-root"
     environment:
       - KAFKA_BROKER_ID=1
       - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
@@ -33,7 +31,7 @@ services:
       - "7077:7077"
       - "8080:8080"
     volumes:
-      - "${PWD}:/lab-root"
+      - ".:/lab-root"
     environment:
       - SPARK_MODE=master
   spark-worker:
@@ -42,4 +40,8 @@ services:
       - SPARK_MODE=worker
       - SPARK_MASTER_URL=spark://spark-master:7077
     volumes:
-      - "${PWD}:/lab-root"
+      - ".:/lab-root"
+
+volumes:
+  kafka_data:
+  zookeeper_data:
