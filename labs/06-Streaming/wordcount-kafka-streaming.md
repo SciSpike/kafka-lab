@@ -37,7 +37,7 @@ have `maven` and its prerequisites installed locally. Open a terminal in the lab
 the following command:
 
 ```shell
-$ docker run -it --rm -v "$(cd "$PWD/../.."; pwd)":/course-root -w "/course-root/$(basename $(cd "$PWD/.."; pwd))/$(basename "$PWD")" -v "$HOME/.m2/repository":/root/.m2/repository maven:3-jdk-11 ./mvnw clean package
+docker run -it --rm -v "$(cd "$PWD/../.."; pwd)":/course-root -w "/course-root/$(basename $(cd "$PWD/.."; pwd))/$(basename "$PWD")" -v "$HOME/.m2/repository":/root/.m2/repository maven:3-jdk-11 ./mvnw clean package
 ```
 
 On a windows machine, you have to replace the `$PWD` with the current directory and the `$HOME` with a directory where you have the `.m2` folder.
@@ -52,7 +52,7 @@ Next, open a new terminal in the lab's root directory & run the Docker Compose s
 configuration file:
 
 ```shell
-$ docker-compose -f kafka-streaming.yaml up
+docker-compose -f kafka-streaming.yaml up
 ```
 
 You will see logs from all the containers that are launched as part of the solution. Once the terminal stops reflecting
@@ -60,22 +60,14 @@ new output, the infrastructure is initialized.
 
 ## Start our streaming application
 
-Now, let's start our streaming application connecting to Kafka running in our Docker environment:
 
-```shell
-$ docker run --network "$(cd .. && basename "$(pwd)" | tr '[:upper:]' '[:lower:]')_default" --rm -it -v "$PWD:/pwd" -w /pwd openjdk:11 java -jar target/wordcount-kafka-solution-*.jar
-```
-
-On a windows machine, you have to replace the `$PWD` with the current directory and the `$HOME` with a directory where you have the `.m2` folder.
-
-
-Now that our Kafka streaming application is running, it's time to feed it some input lines via the Kafka topic.
+Before we start our Kafka streaming application we have to set up some topics and publish/subscribe to the topics.
 
 In yet another terminal, change into the lab's root directory again and this time, start a bash session in the _kafka_
 container:
 
 ```shell
-$ docker-compose -f kafka-streaming.yaml exec kafka bash
+docker-compose -f kafka-streaming.yaml exec kafka bash
 ```
 
 At the subsequent prompt, create the topics & start a Kafka console consumer:
@@ -88,9 +80,18 @@ I have no name!@c07eea6aed61:/$ kafka-console-consumer.sh --bootstrap-server kaf
 In another terminal, start a bash session and pump some lines into the kafka console producer:
 
 ```shell
-$ docker-compose -f kafka-streaming.yaml exec kafka bash
+docker-compose -f kafka-streaming.yaml exec kafka bash
 I have no name!@c07eea6aed61:/$ cat /lab-root/ickle-pickle-tickle.txt | kafka-console-producer.sh --bootstrap-server kafka:9092 --topic stream-input
 ```
+
+Now, let's start our streaming application connecting to Kafka running in our Docker environment:
+
+```shell
+docker run --network "$(cd .. && basename "$(pwd)" | tr '[:upper:]' '[:lower:]')_default" --rm -it -v "$PWD:/pwd" -w /pwd openjdk:11 java -jar target/wordcount-kafka-solution-*.jar
+```
+
+On a windows machine, you have to replace the `$PWD` with the current directory and the `$HOME` with a directory where you have the `.m2` folder.
+
 
 This should produce the output count in the terminal where we're running the console consumer:
 
