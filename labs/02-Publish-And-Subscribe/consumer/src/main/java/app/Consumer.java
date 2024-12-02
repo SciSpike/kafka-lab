@@ -23,6 +23,7 @@ public class Consumer {
       props.setProperty("group.instance.id", props.getProperty("client.id"));
 
       if (inDocker) {
+        System.out.println("We are in docker. Setting the bootstrap server to the docker config");
         props.setProperty("bootstrap.servers", props.getProperty("bootstrap.servers.docker"));
       }
 

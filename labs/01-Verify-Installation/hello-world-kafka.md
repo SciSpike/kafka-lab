@@ -15,42 +15,52 @@ One of the easiest way to get started with Kafka is through the use of [Docker](
 the deployment of applications inside software containers which are self-contained execution environments with their own
 isolated CPU, memory, and network
 resources. [Install Docker Desktop by following the directions appropriate for your operating system.](https://www.docker.com/get-started)
-Make sure that you can run both the `docker` and `docker-compose` command from the terminal.
+Make sure that you can run both the `docker` and `docker compose` command from the terminal.
 
 ## Instructions
 
-1. Open a terminal in this lab directory: `labs/01-Verify-Installation`.
+1. Let's figure out the name of the container that runs Kafka.
 
-2. Start the Kafka and Zookeeper processes using Docker Compose:
+```
+docker ps
+```
+
+You should see something like this:
+
+```
+CONTAINER ID   IMAGE                                COMMAND                  CREATED          STATUS          PORTS                                                                                                                             NAMES
+7b25e8945eb9   confluentinc/confluent-local:7.4.1   "/etc/confluent/dock…"   10 minutes ago   Up 10 minutes   0.0.0.0:8082->8082/tcp, :::8082->8082/tcp, 0.0.0.0:9092->9092/tcp, :::9092->9092/tcp, 0.0.0.0:9101->9101/tcp, :::9101->9101/tcp   broker
+0fd43a1494d9   provectuslabs/kafka-ui:latest        "/bin/sh -c 'java --…"   10 minutes ago   Up 10 minutes   0.0.0.0:8080->8080/tcp, :::8080->8080/tcp                                                                                         docker-kafka-ui-1
+```
+Notice the id of the container and copy it. 
+The CONTAINER ID of the Kafka container is `7b25e8945eb9` in the example above.
+
+2. Create a topic called `helloworld` with a single partition and one replica.
+
+We now have to run the command `docker exec -it <container_id> kafka-topics --bootstrap-server :9092 --create --replication-factor 1 --partitions 1 --topic helloworld`.
+
+Using the ID from the example above, I would have to run the following command:
+
+```bash
+docker exec -it 7b25e8945eb9 kafka-topics --bootstrap-server :9092 --create --replication-factor 1 --partitions 1 --topic helloworld
+```
+
+Make sure you replace the `<container_id>` with the one you copied earlier.
+
+3. You can now see the topic that was just created with the `--list` flag:
 
   ```
-  $ docker-compose up
-  ```
-
-The first time you run this command, it will take a while to download the appropriate Docker images.
-
-3. Open an additional terminal window in the lesson directory, `labs/01-Verify-Installation`. We are going to create a
-   topic called `helloworld` with a single partition and one replica:
-
-  ```
-  $ docker-compose exec kafka kafka-topics.sh --bootstrap-server :9092 --create --replication-factor 1 --partitions 1 --topic helloworld
-  ```
-
-4. You can now see the topic that was just created with the `--list` flag:
-
-  ```
-  $ docker-compose exec kafka kafka-topics.sh --bootstrap-server :9092 --list
+  docker exec -it <container_id> kafka-topics --bootstrap-server :9092 --list
   helloworld
   ```
 
-> NOTE: If you see `__consumer_offsets`, it is an administrative topic automatically created by Kafka itself.
-
 5. Normally you would use the Kafka API from within your application to produce messages but Kafka comes with a command
-   line _producer_ client that can be used for testing purposes. Each line from standard input will be treated as a
-   separate message. Type a few messages and leave the process running.
+   line _producer_ client that can be used for testing purposes. 
+   Each line from standard input will be treated as aseparate message. 
+   Type a few messages and leave the process running.
 
   ```
-  $ docker-compose exec kafka kafka-console-producer.sh --bootstrap-server :9092 --topic helloworld
+  docker exec -it <container_id> kafka-console-producer --bootstrap-server :9092 --topic helloworld
   Hello world!
   Welcome to Kafka.
   ```
@@ -61,7 +71,7 @@ The first time you run this command, it will take a while to download the approp
    will output the messages to standard out.
 
   ```
-  $ docker-compose exec kafka kafka-console-consumer.sh --bootstrap-server kafka:9092 --topic helloworld --from-beginning
+  docker exec -it <container_id> kafka-console-consumer --bootstrap-server :9092 --topic helloworld --from-beginning
   Hello world!
   Welcome to Kafka.
   ```
@@ -76,11 +86,5 @@ The first time you run this command, it will take a while to download the approp
    You may notice that the consumer is processing the text in batches as well as having no problem kepping up with the paste speed of your terminal.
 
 8. Stop the producer and consumer terminals by issuing `ctrl-c`.
-
-9. Finally, stop the Kafka and Zookeeper servers with Docker Compose:
-
-   ```
-   $ docker-compose down
-   ```
 
 Congratulations, this lab is complete!

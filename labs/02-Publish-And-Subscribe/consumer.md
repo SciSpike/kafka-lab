@@ -67,7 +67,7 @@ that should be explored for a production environment.
    command:
 
    ```shell
-   $ docker run -it --rm -v "$(cd "$PWD/../.."; pwd)":/course-root -w "/course-root/$(basename $(cd "$PWD/.."; pwd))/$(basename "$PWD")" -v "$HOME/.m2/repository":/root/.m2/repository maven:3-jdk-11 ./mvnw clean package
+   docker run -it --rm -v "$(cd "$PWD/../.."; pwd)":/course-root -w "/course-root/$(basename $(cd "$PWD/.."; pwd))/$(basename "$PWD")" -v "$HOME/.m2/repository":/root/.m2/repository maven:3-jdk-11 ./mvnw clean package
    ```
 
   On a windows machine, you have to replace the `$PWD` with the current directory and the `$HOME` with a directory where you have the `.m2` folder.
@@ -76,7 +76,7 @@ that should be explored for a production environment.
 6. With the consumer now built, run it with the following command:
 
      ```
-     $ docker run --network 02-publish-and-subscribe_default --rm -it -v "$PWD:/pwd" -w /pwd openjdk:11 java -jar target/pubsub-consumer-*.jar
+     docker run --network docker_kafka_network --rm -it -v "$PWD:/pwd" -w /pwd openjdk:11 java -jar target/pubsub-consumer-*.jar
      SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
      SLF4J: Defaulting to no-operation (NOP) logger implementation
      SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.
@@ -92,11 +92,6 @@ that should be explored for a production environment.
    We have created an optional lab for this which you can run here before going to step 8 and shutting down Kafka.
    Here is a link to the lab.
 
-8. Finally, change back into the `docker/` directory in order to shut down the Kafka and Zookeeper servers.
-
-    ```
-    $ docker-compose down
-    ```
 
 ### Conclusion
 

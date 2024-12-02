@@ -24,7 +24,11 @@ public class Producer {
       props.setProperty("client.id", "02-producer-" + UUID.randomUUID());
 
       if (inDocker) {
+        System.out.println("We are in docker. Setting the bootstrap server to the docker config");
         props.setProperty("bootstrap.servers", props.getProperty("bootstrap.servers.docker"));
+      }
+      else {
+        System.out.println("We are not in docker. Setting the bootstrap server to the local config");
       }
 
       System.out.println("KafkaProducer properties:");

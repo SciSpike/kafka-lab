@@ -94,21 +94,16 @@ On a windows machine, you have to replace the `$PWD` with the current directory 
 
 ### Run everything
 
-Now, it's time to fire up Kafka, a console consumer of the final output topic, the `gps-monitor` and the `gps-pump`.
+If your Kafka-Docker environment is not running, see the [Kafka lab](../../docker/start-kafka.md) for instructions on how to run Kafka.
 
-Open another new terminal in the lab's root directory, `06-Streaming`, and start the Kafka cluster:
-
-```shell
-$ docker-compose -f kafka-streaming.yaml up
-```
-
-Once the log output from the above commands stops being written, open yet another terminal in the lab's root directory
-and create our topics then listen to the output topic using a console consumer:
+Let's create our topics then listen to the output topic using a console consumer (replace `<container_id>` with the container id):
 
 ```shell
-$ docker-compose -f kafka-streaming.yaml exec kafka bash
-I have no name!@2ec21727cbdc:/$ for it in gps-locations frequent-parking; do kafka-topics.sh --boostrap-server kafka:9092 --create --topic $it; done
-I have no name!@2ec21727cbdc:/$ kafka-console-consumer.sh --boostrap-server kafka:9092 --topic frequent-parking --property print.key=true
+docker exec -it <container_id>  bash
+[appuser@broker ~]$ for it in gps-locations frequent-parking; do kafka-topics --bootstrap-server :9092 --create --topic $it; done
+Created topic gps-locations.
+Created topic frequent-parking.
+[appuser@broker ~]$  kafka-console-consumer --bootstrap-server :9092 --topic frequent-parking --property print.key=true
 ```
 
 That terminal will now be quiet until our `gps-monitor` produces some messages on the `frequent-parking` topic.
@@ -116,7 +111,7 @@ That terminal will now be quiet until our `gps-monitor` produces some messages o
 Return to the terminal in which you built the `gps-monitor` project, and fire it up:
 
 ```shell
-$ docker run --network "$(cd ../.. && basename "$(pwd)" | tr '[:upper:]' '[:lower:]')_default" --rm -it -v "$PWD:/pwd" -w /pwd openjdk:11 java -jar target/gps-monitor*.jar
+docker run --network docker_kafka_network --rm -it -v "$PWD:/pwd" -w /pwd openjdk:11 java -jar target/gps-monitor*.jar
 ```
 
 On a windows machine, you have to replace the `$PWD` with the current directory and the `$HOME` with a directory where you have the `.m2` folder.
@@ -124,7 +119,7 @@ On a windows machine, you have to replace the `$PWD` with the current directory 
 Next, return to the terminal in which you built the `gps-pump` project, and start it:
 
 ```shell
-$ docker run --network "$(cd ../.. && basename "$(pwd)" | tr '[:upper:]' '[:lower:]')_default" --rm -it -v "$PWD:/pwd" -w /pwd openjdk:11 java -jar target/gps-pump*.jar
+$ docker run --network docker_kafka_network --rm -it -v "$PWD:/pwd" -w /pwd openjdk:11 java -jar target/gps-pump*.jar
 ```
 
 On a windows machine, you have to replace the `$PWD` with the current directory and the `$HOME` with a directory where you have the `.m2` folder.

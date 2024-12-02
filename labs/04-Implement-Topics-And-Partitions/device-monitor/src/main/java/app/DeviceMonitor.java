@@ -82,7 +82,10 @@ public class DeviceMonitor {
       props.setProperty("group.instance.id", props.getProperty("client.id"));
 
       if (inDocker) {
+        System.out.println("In Docker");
         props.setProperty("bootstrap.servers", props.getProperty("bootstrap.servers.docker"));
+      } else {
+        System.out.println("Not in Docker");
       }
 
       var consumer = new KafkaConsumer<String, String>(props);

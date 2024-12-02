@@ -17,7 +17,7 @@ Like the previous lab, [Docker](https://www.docker.com) will be used to start a 
 All the directory references in this lab is relative to where you expended the lab files and `labs/02-Publish-And-Subscribe`
 
 1. Open a terminal in this lesson's directory: `docker/`.
-
+z
 1. Open the `docker-compose.yml` file which contains the following:
 
     ```yaml
@@ -80,13 +80,8 @@ All the directory references in this lab is relative to where you expended the l
 
     Save the `docker-compose.yml` file after making this modification.
 
-1. Start the Kafka and Zookeeper processes using Docker Compose:
-
-    ```
-    $ docker-compose up
-    ```
-
-1. Open an additional terminal window in the lesson directory, `docker/`. We are going to create two topics that will be used in the Producer program. Run the following commands:
+1. Open a terminal window. 
+    We are going to create two topics that will be used in the Producer program. Run the following commands:
 
     ```
     $ docker-compose exec kafka /opt/kafka/bin/kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 --partitions 1 --topic user-events
