@@ -30,47 +30,24 @@ public class GpsMonitor {
     // This defines the processing topology -- the println statements allow you to see that things
     // are happening
     stream
-        // split the line
-        .map(
-            (key, val) -> {
-              System.out.println("splitting: " + val);
-              return new KeyValue<>(key, regex.split(val));
-            })
-        // only keep positions where speed is less than 1, meaning "parked"
-        .filter(
-            (__, val) -> {
-              String record = Arrays.toString(val);
-              try {
-                // ensure record contains valid data where expected; should really check that these
-                // are valid lats & longs, but we'll just go with it if they're parsable as doubles
+        .map((key, val) -> new KeyValue<>(key, regex.split(val)))
+        .filter((__, val) -> {
+            try {
                 Double.parseDouble(val[4]);
                 Double.parseDouble(val[5]);
-                if (Double.parseDouble(val[2]) < 1.0) {
-                  // then this reading represents a "parked" record
-                  System.out.println("keeping parking record: " + record);
-                  return true;
-                }
-                // else ignore
+                return Double.parseDouble(val[2]) < 1.0;
+            } catch (Exception x) {
                 return false;
-              } catch (Exception x) {
-                System.out.println("filtering out bad record: " + record);
-                return false;
-              }
-            })
-        // map to new KeyValue of (id+geohash, id)
-        .map(
-            (__, val) -> {
-              var key =
-                  new LocationKey(val[0], Double.parseDouble(val[4]), Double.parseDouble(val[5]))
-                      .toString();
-              return new KeyValue<>(key, val[0]);
-            })
+            }
+        })
+        .map((__, val) -> new KeyValue<>(
+            new LocationKey(val[0], Double.parseDouble(val[4]), Double.parseDouble(val[5])).toString(), 
+            val[0]))
         .groupByKey()
         .count(Materialized.as("parking-store"))
-        .mapValues(Object::toString) // because we're using string de/serialization
+        .mapValues(Object::toString)
         .toStream()
         .to(props.getProperty("topics.output"));
-
     // let's hook up to Kafka using the builder and the properties
     KafkaStreams streams = new KafkaStreams(builder.build(), props);
     // and then we can start the stream processing

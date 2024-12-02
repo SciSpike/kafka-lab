@@ -46,48 +46,39 @@ The command above will build and package our uber jar with the application and a
 
 ## Run Kafka
 
-In order to run our app, we first need to run Kafka. First, ensure that you've shut down any prior docker containers.
+If you are running this lab for the first time, you need to run Kafka.
 
-Next, open a new terminal in the lab's root directory & run the Docker Compose stack using the `kafka-streaming.yaml`
-configuration file:
-
-```shell
-docker-compose -f kafka-streaming.yaml up
-```
-
-You will see logs from all the containers that are launched as part of the solution. Once the terminal stops reflecting
-new output, the infrastructure is initialized.
+See the [Kafka lab](../../docker/start-kafka.md) for instructions on how to run Kafka.
 
 ## Start our streaming application
-
 
 Before we start our Kafka streaming application we have to set up some topics and publish/subscribe to the topics.
 
 In yet another terminal, change into the lab's root directory again and this time, start a bash session in the _kafka_
-container:
+container (replace `<container_id>` with the container id):
 
 ```shell
-docker-compose -f kafka-streaming.yaml exec kafka bash
+docker exec -it <container_id> bash
 ```
 
 At the subsequent prompt, create the topics & start a Kafka console consumer:
 
 ```shell
-I have no name!@c07eea6aed61:/$ for it in input output; do kafka-topics.sh --create --bootstrap-server kafka:9092 --topic stream-$it; done
-I have no name!@c07eea6aed61:/$ kafka-console-consumer.sh --bootstrap-server kafka:9092 --topic stream-output --from-beginning --property print.key=true
+[appuser@broker ~]$ for it in input output; do kafka-topics --create --bootstrap-server :9092 --topic stream-$it; done
+[appuser@broker ~]$ kafka-console-consumer --bootstrap-server :9092 --topic stream-output --from-beginning --property print.key=true
 ```
 
 In another terminal, start a bash session and pump some lines into the kafka console producer:
 
 ```shell
-docker-compose -f kafka-streaming.yaml exec kafka bash
-I have no name!@c07eea6aed61:/$ cat /lab-root/ickle-pickle-tickle.txt | kafka-console-producer.sh --bootstrap-server kafka:9092 --topic stream-input
+docker exec -it <container_id> bash
+[appuser@broker ~]$ cat /data/ickle-pickle-tickle.txt | kafka-console-producer --bootstrap-server :9092 --topic stream-input
 ```
 
 Now, let's start our streaming application connecting to Kafka running in our Docker environment:
 
 ```shell
-docker run --network "$(cd .. && basename "$(pwd)" | tr '[:upper:]' '[:lower:]')_default" --rm -it -v "$PWD:/pwd" -w /pwd openjdk:11 java -jar target/wordcount-kafka-solution-*.jar
+docker run --network docker_kafka_network --rm -it -v "$PWD:/pwd" -w /pwd openjdk:11 java -jar target/wordcount-kafka-solution-*.jar
 ```
 
 On a windows machine, you have to replace the `$PWD` with the current directory and the `$HOME` with a directory where you have the `.m2` folder.
@@ -111,13 +102,7 @@ too	7
 For fun, you can submit the full text of Leo Tolstoy's "War & Peace"!
 
 ```shell
-I have no name!@c07eea6aed61:/$ cat /lab-root/war-and-peace.txt | kafka-console-producer.sh --bootstrap-server kafka:9092 --topic stream-input
-```
-
-In the lab's root directory, you can now bring down the cluster with the command
-
-```shell
-$ docker-compose -f kafka-streaming.yaml down
+[appuser@broker ~]$ cat /data/war-and-peace.txt | kafka-console-producer.sh --bootstrap-server kafka:9092 --topic stream-input
 ```
 
 Congratulations, you've completed this lab!

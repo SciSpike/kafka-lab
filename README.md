@@ -4,12 +4,12 @@
 
 First, welcome to this course on Kafka.
 
-Although Kafka is quite simple to install, we decided to make base it on Docker and Docker-Compose.
+Although Kafka is quite simple to install, we decided to make base it on `Docker` and `Docker-Compose`.
 This gives us a couple of advantages:
 
 - Easier installation:
   - As long as you can get Docker to run, we know that the Kafka installation will work
-  - Install docker, then simply run the docker-compose file
+  - Install docker, then simply run the `docker compose` file
 - Consistency between Windows, Mac and Linux
 - The ability to scale up and down the Kafka cluster
 

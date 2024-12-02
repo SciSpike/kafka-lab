@@ -12,13 +12,16 @@ Consumer so that you can see an end to end example using the API.
 
 ## Prerequisites
 
-Like the previous lab, [Docker](https://www.docker.com) will be used to start a Kafka and Zookeeper server. We will also
-use a [Maven Docker image](https://hub.docker.com/_/maven) to compile & package the Java code and
-an [OpenJDK image](https://hub.docker.com/_/openjdk) to run it.
+Like the previous lab, [Docker](https://www.docker.com) will be used to start Kafka. 
+For those that don't have Maven and Java installed, we will also show how you can build and run the application using Docker.
+
+We will use a [Maven Docker image](https://hub.docker.com/_/maven) to compile & package the Java code and an [OpenJDK image](https://hub.docker.com/_/openjdk) to run it.
 
 You should have a text editor available with Java syntax highlighting for clarity. You will need a basic understanding
 of Java programming to follow the lab although coding will not be required. The Kafka Producer example will be explained
 and then you will compile and execute it against the Kafka server.
+
+If Kafka is not running, please refer to the [starting-kafka-with-docker.md](../docker/starting-kafka-with-docker.md).
 
 ## Instructions
 
@@ -27,15 +30,7 @@ and `labs/02-Publish-And-Subscribe`
 
 1. Open a terminal in this lesson's root directory.
 
-2. Start the Kafka and Zookeeper containers using Docker Compose:
-
-    ```
-    $ docker-compose up
-    ```
-
-3. Open an additional terminal window in the lesson directory.
-
-4. Open `producer/src/main/java/app/Producer.java` in your text editor. This class is fairly simple Java application but
+2. Open `producer/src/main/java/app/Producer.java` in your text editor. This class is fairly simple Java application but
    contains all the functionality necessary to operate as a Kafka Producer. The application has two main
    responsibilities:
 
@@ -64,7 +59,7 @@ and `labs/02-Publish-And-Subscribe`
    [many configuration options available for Kafka producers](http://kafka.apache.org/documentation.html#producerconfigs)
    that should be explored for a production environment.
 
-5. Once you have a `KafkaProducer` instance, you can post messages to a topic using
+3. Once you have a `KafkaProducer` instance, you can post messages to a topic using
    the [`ProducerRecord`](http://kafka.apache.org/0100/javadoc/org/apache/kafka/clients/producer/ProducerRecord.html).
    A `ProducerRecord` is a key/value pair that consists of a topic name to which the record is being sent, an optional
    partition number, an optional key, and required value.
@@ -79,13 +74,13 @@ and `labs/02-Publish-And-Subscribe`
    that it is called. It is also possible to use a Kafka producer in
    a [try-with-resources statement](https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html).
 
-6. Now we are ready to compile the lab. In a terminal, change to the lab's `producer` directory and run the following
+4. Now we are ready to compile the lab. In a terminal, change to the lab's `producer` directory and run the following
    command:
 
 If you are on a Mac (or in linux), this should work:
 
    ```shell
-   $ docker run -it --rm -v "$(cd "$PWD/../.."; pwd)":/course-root -w "/course-root/$(basename $(cd "$PWD/.."; pwd))/$(basename "$PWD")" -v "$HOME/.m2/repository":/root/.m2/repository maven:3-jdk-11 ./mvnw clean package
+   docker run -it --rm -v "$(cd "$PWD/../.."; pwd)":/course-root -w "/course-root/$(basename $(cd "$PWD/.."; pwd))/$(basename "$PWD")" -v "$HOME/.m2/repository":/root/.m2/repository maven:3-jdk-11 ./mvnw clean package
    ```
 
 On a Windows machine, the `$PWD` and `pwd` commands may not work (unless you run in a Unix-compliant shell). PWD means `print current directory`. 
@@ -100,7 +95,7 @@ This simply means your home directory. You can always replace `$HOME` with your 
 7. With the producer now built, run it with the following command:
 
      ```
-     $ docker run --network 02-publish-and-subscribe_default --rm -it -v "$PWD:/pwd" -w /pwd openjdk:11 java -jar target/pubsub-producer-*.jar
+     docker run --network docker_kafka_network --rm -it -v "$PWD:/pwd" -w /pwd openjdk:11 java -jar target/pubsub-producer-*.jar
      SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
      SLF4J: Defaulting to no-operation (NOP) logger implementation
      SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.

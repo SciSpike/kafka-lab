@@ -1,0 +1,36 @@
+services:
+  broker:
+    container_name: broker
+    environment:
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:29092,PLAINTEXT_HOST://localhost:${KAFKA_BROKER_PORT}
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@broker:29093
+      KAFKA_LISTENERS: PLAINTEXT://broker:29092,CONTROLLER://broker:29093,PLAINTEXT_HOST://0.0.0.0:9092
+    hostname: broker
+    image: confluentinc/confluent-local:7.4.1
+    ports:
+    - 8082:8082
+    - ${KAFKA_BROKER_PORT}:9092
+    - 9101:9101
+    volumes:
+    - kafka_data:/var/lib/kafka/data
+    - ./data:/data
+    networks:
+      - kafka_network
+  kafka-ui:
+    environment:
+      DYNAMIC_CONFIG_ENABLED: 'true'
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: broker:29092
+      KAFKA_CLUSTERS_0_NAME: local
+    image: provectuslabs/kafka-ui:v0.7.2
+    ports:
+    - ${KAFKA_UI_PORT}:8080
+    networks:
+      - kafka_network
+
+volumes:
+  kafka_data:
+
+networks:
+  kafka_network:
+    driver: bridge
+    external: false

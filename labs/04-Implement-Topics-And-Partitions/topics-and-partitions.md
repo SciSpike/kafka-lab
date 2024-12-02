@@ -26,11 +26,11 @@ $ docker-compose up
 
 ## Create the topics
 
-In a new terminal, change directory to where we have our docker-compose file (`04-Implement-Topics-And-Partitions`) and run the following commands:
+In a new terminal, change directory to where we have our docker-compose file (`04-Implement-Topics-And-Partitions`) and run the following commands (make sure to replace `<container_id>` with the actual container ID):
 
 ```bash
-$ docker-compose exec kafka kafka-topics.sh --bootstrap-server :9092 --create --replication-factor 1 --partitions 1 --topic device-event
-$ docker-compose exec kafka kafka-topics.sh --bootstrap-server :9092 --create --replication-factor 1 --partitions 1 --topic device-heartbeat
+docker exec -it <container_id> kafka-topics --create --bootstrap-server :9092 --replication-factor 1 --partitions 1 --topic device-event
+docker exec -it <container_id> kafka-topics --create --bootstrap-server :9092 --replication-factor 1 --partitions 1 --topic device-heartbeat
 ```
 
 ## Build and run the device simulator
@@ -40,7 +40,7 @@ We've already created a device simulator app, but we have to build it first.
 In a terminal, change to the lab's `device-simulator` directory and run the following command:
 
 ```shell
-$ docker run -it --rm -v "$(cd "$PWD/../.."; pwd)":/course-root -w "/course-root/$(basename $(cd "$PWD/.."; pwd))/$(basename "$PWD")" -v "$HOME/.m2/repository":/root/.m2/repository maven:3-jdk-11 ./mvnw clean package
+docker run -it --rm -v "$(cd "$PWD/../.."; pwd)":/course-root -w "/course-root/$(basename $(cd "$PWD/.."; pwd))/$(basename "$PWD")" -v "$HOME/.m2/repository":/root/.m2/repository maven:3-jdk-11 ./mvnw clean package
 ```
 
 On a windows machine, you have to replace the `$PWD` with the current directory and the `$HOME` with a directory where you have the `.m2` folder.
@@ -50,7 +50,7 @@ On a windows machine, you have to replace the `$PWD` with the current directory 
 Next, let's start the simulator of device messages.
 
 ```shell
-$ docker run --network "$(cd .. && basename "$(pwd)" | tr '[:upper:]' '[:lower:]')_default" --rm -it -v "$PWD:/pwd" -w /pwd openjdk:11 java -jar target/device-simulator-app-*.jar
+docker run --network docker_kafka_network --rm -it -v "$PWD:/pwd" -w /pwd openjdk:11 java -jar target/device-simulator-app-*.jar
 SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
 SLF4J: Defaulting to no-operation (NOP) logger implementation
 SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.
@@ -68,7 +68,7 @@ run the Kafka consumer.
 
 ```
 $ cd docker
-$ docker-compose exec kafka kafka-console-consumer.sh --bootstrap-server kafka:9092 --topic device-heartbeat
+docker exec <container_id> kafka-console-consumer --bootstrap-server :9092 --topic device-heartbeat
 ```
 
 After a few seconds you should start to see heartbeat messages being produced:
@@ -111,7 +111,7 @@ study the code and see how it works.
 First, build the application:
 
 ```shell
-$ docker run -it --rm -v "$(cd "$PWD/../.."; pwd)":/course-root -w "/course-root/$(basename $(cd "$PWD/.."; pwd))/$(basename "$PWD")" -v "$HOME/.m2/repository":/root/.m2/repository maven:3-jdk-11 ./mvnw clean package
+docker run -it --rm -v "$(cd "$PWD/../.."; pwd)":/course-root -w "/course-root/$(basename $(cd "$PWD/.."; pwd))/$(basename "$PWD")" -v "$HOME/.m2/repository":/root/.m2/repository maven:3-jdk-11 ./mvnw clean package
 ```
 
 On a windows machine, you have to replace the `$PWD` with the current directory and the `$HOME` with a directory where you have the `.m2` folder.
@@ -120,7 +120,7 @@ On a windows machine, you have to replace the `$PWD` with the current directory 
 Next, run it:
 
 ```shell
-$ docker run --network "$(cd .. && basename "$(pwd)" | tr '[:upper:]' '[:lower:]')_default" --rm -it -v "$PWD:/pwd" -w /pwd openjdk:11 java -jar target/device-monitor-*.jar
+docker run --network docker_kafka_network --rm -it -v "$PWD:/pwd" -w /pwd openjdk:11 java -jar target/device-monitor-*.jar
 ```
 
 On a windows machine, you have to replace the `$PWD` with the current directory and the `$HOME` with a directory where you have the `.m2` folder.
@@ -148,7 +148,7 @@ Finished checking devices...
 ### Create a console consumer online/offline messages
 
 ```
-$ docker-compose exec kafka kafka-console-consumer.sh --bootstrap-server kafka:9092 --topic device-event
+docker exec <container_id> kafka-console-consumer --bootstrap-server :9092 --topic device-event
 ```
 
 It may take some time before you see online or offline messages (see the device simulator and you'll see the randomness
