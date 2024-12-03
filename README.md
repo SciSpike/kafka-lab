@@ -17,7 +17,7 @@ This gives us a couple of advantages:
 
 Our labs require that you have Docker installed and get Kafka up and running.
 
-We describe how [here](docker/start-docker.md).
+We describe how [here](docker/starting-docker.md).
 
 ## Link to the labs
 
