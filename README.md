@@ -13,6 +13,12 @@ This gives us a couple of advantages:
 - Consistency between Windows, Mac and Linux
 - The ability to scale up and down the Kafka cluster
 
+## Installing Docker
+
+Our labs require that you have Docker installed and get Kafka up and running.
+
+We describe how [here](docker/start-docker.md).
+
 ## Link to the labs
 
 [This link will lead you to all the labs and examples](labs/labs.md)
@@ -24,7 +30,7 @@ This gives us a couple of advantages:
 * Introduction (Lecture ~ 20 min)
   * Who are we?
   * What is Kafka?
-  * Explain first lab
+  * First lab
 * Verify that everything is installed and working (Lab ~ 20 min)
   * Install Kafka through Docker
   * Run a simple example of Kafka
@@ -34,7 +40,7 @@ This gives us a couple of advantages:
   * What is a partition?
   * What is a producer?
   * What is a consumer?
-* Creating a topic and pass a message (Lab ~30 min)
+* Creating a topic and passing a message (Lab ~30 min)
   * Create a topic
   * Run a simple consumer
   * Run a simple producer
