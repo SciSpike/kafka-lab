@@ -85,7 +85,11 @@ public class StreamExample {
       props.setProperty("group.instance.id", props.getProperty("application.id"));
 
       if (inDocker) {
+        System.out.println("Running in docker");
         props.setProperty("bootstrap.servers", props.getProperty("bootstrap.servers.docker"));
+      }
+      else {
+        System.out.println("Running outside docker");
       }
 
       return props;
