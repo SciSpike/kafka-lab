@@ -30,6 +30,4 @@ Note that all the labs assume that you have successfully installed docker.
 - Streaming
 
   - [Word count lab using Kafka Streams](06-Streaming/wordcount-kafka-stream-lab.md)
-  - [Word count lab using Spark](06-Streaming/wordcount-spark-lab.md)
   - [IoT example using Kafka Streams](06-Streaming/iot-kafka-lab.md)
-  - [IoT example using Spark](06-Streaming/iot-spark-lab.md)

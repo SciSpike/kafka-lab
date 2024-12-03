@@ -77,7 +77,7 @@ We then build our `Topology`, and get a `KafkaStreams` reference to `start`, the
 Open a terminal in the `gps-pump` directory and issue the following command:
 
 ```shell
-$ docker run -it --rm -v "$(cd "$PWD/../../../.."; pwd)":/course-root -w /course-root/labs/06-Streaming/iot-kafka/gps-pump -v "$HOME/.m2/repository":/root/.m2/repository maven:3-jdk-11 ./mvnw clean package
+docker run -it --rm -v "$(cd "$PWD/../../../.."; pwd)":/course-root -w /course-root/labs/06-Streaming/iot-kafka/gps-pump -v "$HOME/.m2/repository":/root/.m2/repository maven:3-jdk-11 ./mvnw clean package
 ```
 
 On a windows machine, you have to replace the `$PWD` with the current directory and the `$HOME` with a directory where you have the `.m2` folder.
@@ -86,7 +86,7 @@ On a windows machine, you have to replace the `$PWD` with the current directory 
 Similarly, open another terminal in the `gps-monitor` directory and build it:
 
 ```shell
-$ docker run -it --rm -v "$(cd "$PWD/../../../.."; pwd)":/course-root -w /course-root/labs/06-Streaming/iot-kafka/gps-monitor -v "$HOME/.m2/repository":/root/.m2/repository maven:3-jdk-11 ./mvnw clean package
+docker run -it --rm -v "$(cd "$PWD/../../../.."; pwd)":/course-root -w /course-root/labs/06-Streaming/iot-kafka/gps-monitor -v "$HOME/.m2/repository":/root/.m2/repository maven:3-jdk-11 ./mvnw clean package
 ```
 
 On a windows machine, you have to replace the `$PWD` with the current directory and the `$HOME` with a directory where you have the `.m2` folder.
@@ -119,7 +119,7 @@ On a windows machine, you have to replace the `$PWD` with the current directory 
 Next, return to the terminal in which you built the `gps-pump` project, and start it:
 
 ```shell
-$ docker run --network docker_kafka_network --rm -it -v "$PWD:/pwd" -w /pwd openjdk:11 java -jar target/gps-pump*.jar
+docker run --network docker_kafka_network --rm -it -v "$PWD:/pwd" -w /pwd openjdk:11 java -jar target/gps-pump*.jar
 ```
 
 On a windows machine, you have to replace the `$PWD` with the current directory and the `$HOME` with a directory where you have the `.m2` folder.
