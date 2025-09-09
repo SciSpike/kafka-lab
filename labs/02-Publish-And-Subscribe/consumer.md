@@ -63,7 +63,7 @@ that should be explored for a production environment.
    records. From there our example lab just uses a `switch` statement to process each type of topic. In a real
    application, you would do something more interesting here than output the results to `stdout`.
 
-5. Now we are ready to compile and run the lab. In a terminal, change to the `lab` directory and run the following
+5. Now we are ready to compile and run the lab. In a terminal, change to the `consumer`` directory and run the following
    command:
 
    ```shell
