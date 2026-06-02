@@ -48,7 +48,7 @@ The command above will build and package our uber jar with the application and a
 
 If you are running this lab for the first time, you need to run Kafka.
 
-See the [Kafka lab](../../docker/start-kafka.md) for instructions on how to run Kafka.
+See the [Starting Kafka with Docker](../../docker/starting-docker.md) for instructions on how to run Kafka.
 
 ## Start our streaming application
 
@@ -102,7 +102,7 @@ too	7
 For fun, you can submit the full text of Leo Tolstoy's "War & Peace"!
 
 ```shell
-[appuser@broker ~]$ cat /data/war-and-peace.txt | kafka-console-producer.sh --bootstrap-server kafka:9092 --topic stream-input
+[appuser@broker ~]$ cat /data/war-and-peace.txt | kafka-console-producer --bootstrap-server :9092 --topic stream-input
 ```
 
 Congratulations, you've completed this lab!

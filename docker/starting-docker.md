@@ -49,6 +49,6 @@ If you have issues running the docker compose file, you can try the following:
 
 If you experience volume corruption, you can try the following:
 
-1. Find the name of your volume (typicall `docker_kafka_data`)
+1. Find the name of your volume (typically `docker_kafka_data`)
 2. Delete the volume using the following command: `docker volume rm <volume_name>`
 3. Run `docker compose up` again.

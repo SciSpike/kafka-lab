@@ -54,9 +54,9 @@ Make sure you replace the `<container_id>` with the one you copied earlier.
   helloworld
   ```
 
-5. Normally you would use the Kafka API from within your application to produce messages but Kafka comes with a command
+4. Normally you would use the Kafka API from within your application to produce messages but Kafka comes with a command
    line _producer_ client that can be used for testing purposes. 
-   Each line from standard input will be treated as aseparate message. 
+   Each line from standard input will be treated as a separate message. 
    Type a few messages and leave the process running.
 
   ```
@@ -67,7 +67,7 @@ Make sure you replace the `<container_id>` with the one you copied earlier.
 
 > NOTE: use keystroke `ctrl-d` to end message production via the terminal.
 
-6. Open another terminal window in the lesson directory. In this window, we can use Kafka's command line _consumer_ that
+5. Open another terminal window in the lesson directory. In this window, we can use Kafka's command line _consumer_ that
    will output the messages to standard out.
 
   ```
@@ -76,14 +76,14 @@ Make sure you replace the `<container_id>` with the one you copied earlier.
   Welcome to Kafka.
   ```
 
-7. In the _producer_ client terminal, type a few more messages that you should now see echoed in the _consumer_
+6. In the _producer_ client terminal, type a few more messages that you should now see echoed in the _consumer_
    terminal.
 
-8. [OPTIONAL] You may want to try a bit more text to see how Kafka is able to keep up with a larger load of text. 
+7. [OPTIONAL] You may want to try a bit more text to see how Kafka is able to keep up with a larger load of text. 
    For example, you may try to paste the complete work of "War and Peace".
    You can find the text here: https://www.gutenberg.org/files/2600/2600-0.txt.
    To do so, simply copy the complete text from a web browser and paste it into the kafka-producer.
-   You may notice that the consumer is processing the text in batches as well as having no problem kepping up with the paste speed of your terminal.
+   You may notice that the consumer is processing the text in batches as well as having no problem keeping up with the paste speed of your terminal.
 
 8. Stop the producer and consumer terminals by issuing `ctrl-c`.
 

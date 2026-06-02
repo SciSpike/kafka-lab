@@ -29,5 +29,5 @@ Note that all the labs assume that you have successfully installed docker.
 
 - Streaming
 
-  - [Word count lab using Kafka Streams](06-Streaming/wordcount-kafka-stream-lab.md)
+  - [Word count lab using Kafka Streams](06-Streaming/wordcount-kafka-streaming.md)
   - [IoT example using Kafka Streams](06-Streaming/iot-kafka-lab.md)

@@ -2,13 +2,13 @@
 
 ## Introduction
 
-When you are consuming and producing messages to Kafka, you can adjust a set of paramters that may have a dramatic impact on performance.
+When you are consuming and producing messages to Kafka, you can adjust a set of parameters that may have a dramatic impact on performance.
 
 In this lab, we'll play around with some of these parameters. 
-However, it is imporant to note that performance is not everything. 
-As we progress in this course, we'll be discussing the various tradeoffs that these paramters offers.
+However, it is important to note that performance is not everything. 
+As we progress in this course, we'll be discussing the various tradeoffs that these parameters offer.
 
-Howevrer, let's just focus on performance here.
+However, let's just focus on performance here.
 
 
 ## Timing the Runs
@@ -21,7 +21,7 @@ E.g.:
 $ time java -jar target/MY.jar
 ```
 
-You should see some timing paramters at end of the run. E.g.:
+You should see some timing parameters at end of the run. E.g.:
 
 ```sh
 2.81s user 0.31s system 42% cpu 7.279 total
@@ -32,7 +32,7 @@ On Windows, things gets a bit more tricky.
 If you can run in PowerShell, , you can run your command using `Measure-Command`. E.g.:
 
 ```powershell
-PS> Meassure-Command { java -jar target/MY.jar}
+PS> Measure-Command { java -jar target/MY.jar }
 ```
 
 If not, here is a a batch file that you can use: 
@@ -77,20 +77,20 @@ You can now run your command as follows:
 
 In the producer, we explicitly flush the messages every 100'th message. 
 
-A few quesstions:
+A few questions:
 
 * What is the effect of commenting out this flush command? 
 * Did you get a better performance? If so, why?
 
 ## The Producer and Consumer Properties
 
-In both the producer lab and the consumer lab we have extenralized some of the Kafka properties.
-There are a large number of possible paramters that can be set.
-Some of these paramters have dramatic effect on performance.
+In both the producer lab and the consumer lab we have externalized some of the Kafka properties.
+There are a large number of possible parameters that can be set.
+Some of these parameters have a dramatic effect on performance.
 
-### Read up on some selected producer paramters
+### Read up on some selected producer parameters
 
-You can read about the producer paramters here: https://docs.confluent.io/platform/current/installation/configuration/producer-configs.html
+You can read about the producer parameters here: https://docs.confluent.io/platform/current/installation/configuration/producer-configs.html
 
 Read up on the following properties for the producer:
 
@@ -98,11 +98,11 @@ Read up on the following properties for the producer:
 * `batch.size`
 * `linger.ms`
 
-Try to play with some of these paramters and measure the effect. 
+Try to play with some of these parameters and measure the effect. 
 
-### Read up on some selected consumer paramters
+### Read up on some selected consumer parameters
 
-You can read about the consumer paramters here: https://docs.confluent.io/platform/current/installation/configuration/consumer-configs.html
+You can read about the consumer parameters here: https://docs.confluent.io/platform/current/installation/configuration/consumer-configs.html
 
 Read up on the following properties for the consumer:
 
@@ -112,4 +112,4 @@ Read up on the following properties for the consumer:
 * `max.poll.records`
 * `receive.buffer.bytes`
 
-Play with some of these paramters and measure the effect
+Play with some of these parameters and measure the effect

@@ -14,11 +14,11 @@ a `KafkaProducer` was created to send messages to two topics: `user-events` and 
 Like the previous lab, [Docker](https://www.docker.com) will be used to start a Kafka and Zookeeper server. We will also
 use a [Maven Docker image](https://hub.docker.com/_/maven) to compile & package the Java code and
 an [OpenJDK image](https://hub.docker.com/_/openjdk) to run it. You should have already completed the
-previous    `KafkaProducer` lab so that there are messages ready in the Kafka server for the Consumer to process.
+previous `KafkaProducer` lab so that there are messages ready in the Kafka server for the Consumer to process.
 
 ## Instructions
 
-1. Open `consumer/src/main/java/com/example/Consumer.java` in your favorite text editor. Like the producer we saw in the
+1. Open `consumer/src/main/java/app/Consumer.java` in your favorite text editor. Like the producer we saw in the
    previous lab, this is a fairly simple Java class but can be expanded upon in a real application. For example, after
    processing the incoming records from Kafka, you would probably want to do something interesting like store them
    in [HBase](https://hbase.apache.org/) for later analysis. This application has two main responsibilities:
@@ -50,7 +50,7 @@ Like the producer, there
 are [many configuration options available for Kafka consumer](http://kafka.apache.org/documentation.html#consumerconfigs)
 that should be explored for a production environment.
 
-3. Open `consumer/src/main/java/com/example/Consumer.java` again. A consumer can subscribe to one ore more topics. In
+3. Open `consumer/src/main/java/app/Consumer.java` again. A consumer can subscribe to one ore more topics. In
    this lab, you can see that the consumer will listen to messages from two topics.
 
 4. Once the consumer has subscribed to the topics, the consumer then polls for new messages in an infinite loop.
@@ -63,7 +63,7 @@ that should be explored for a production environment.
    records. From there our example lab just uses a `switch` statement to process each type of topic. In a real
    application, you would do something more interesting here than output the results to `stdout`.
 
-5. Now we are ready to compile and run the lab. In a terminal, change to the `consumer`` directory and run the following
+5. Now we are ready to compile and run the lab. In a terminal, change to the `consumer` directory and run the following
    command:
 
    ```shell
@@ -88,9 +88,9 @@ that should be explored for a production environment.
    press `ctrl-c` in the terminal window.
 
 7. [OPTIONAL] Play with the performance.
-   Before we shut down Kafka, you may want to spend some time playing with the perfomance of the programs. 
+   Before we shut down Kafka, you may want to spend some time playing with the performance of the programs. 
    We have created an optional lab for this which you can run here before going to step 8 and shutting down Kafka.
-   Here is a link to the lab.
+   Here is a [link to the performance lab](performance.md).
 
 
 ### Conclusion

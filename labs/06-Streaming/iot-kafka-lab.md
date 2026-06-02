@@ -94,7 +94,7 @@ On a windows machine, you have to replace the `$PWD` with the current directory 
 
 ### Run everything
 
-If your Kafka-Docker environment is not running, see the [Kafka lab](../../docker/start-kafka.md) for instructions on how to run Kafka.
+If your Kafka-Docker environment is not running, see [Starting Kafka with Docker](../../docker/starting-docker.md) for instructions on how to run Kafka.
 
 Let's create our topics then listen to the output topic using a console consumer (replace `<container_id>` with the container id):
 

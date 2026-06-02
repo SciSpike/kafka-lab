@@ -21,12 +21,12 @@ You should have a text editor available with Java syntax highlighting for clarit
 of Java programming to follow the lab although coding will not be required. The Kafka Producer example will be explained
 and then you will compile and execute it against the Kafka server.
 
-If Kafka is not running, please refer to the [starting-kafka-with-docker.md](../docker/starting-kafka-with-docker.md).
+If Kafka is not running, please refer to the [starting-docker.md](../../docker/starting-docker.md).
 
 ## Instructions
 
-All the directory references in this lab is relative to where you expended the lab files
-and `labs/02-Publish-And-Subscribe`
+All the directory references in this lab are relative to where you expanded the lab files
+and `labs/02-Publish-And-Subscribe`.
 
 1. Open a terminal in this lesson's root directory.
 
@@ -87,7 +87,7 @@ On a Windows machine, the `$PWD` and `pwd` commands may not work (unless you run
 
 The trick we use above is to map the directory two steps down from the current (which is where the labs are installed on your machine). 
 So say you had our labs installed in a directory called `/tmp/MyKafkaLabs`, you are now in the directory `/tmp/MyKafkaLabs/kafka-lab/labs/02-Publish-And-Subscribe`.
-The script `"$(cd "$PWD/../.."; pwd)"` simply out`puts the path two steps down from here, which would be `/tmp/MyKafkaLabs/kafka-lab`. 
+The script `"$(cd "$PWD/../.."; pwd)"` simply outputs the path two steps down from here, which would be `/tmp/MyKafkaLabs/kafka-lab`. 
 
 The next thing to look out for on a Windows machine is the use of `$HOME`. 
 This simply means your home directory. You can always replace `$HOME` with your home directory.

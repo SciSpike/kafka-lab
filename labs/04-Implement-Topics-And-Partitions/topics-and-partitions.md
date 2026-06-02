@@ -17,16 +17,16 @@ minute, we want to sound an alarm.
 
 ## Start docker containers
 
-Make sure you shut down the docker images from the last exercises, then change into this lab's directory and start
-docker:
+We use the same Kafka cluster as the previous labs. If it is not already running, change into the `docker` directory at the repository root and start it:
 
 ```bash
-$ docker-compose up
+$ cd ../../docker
+$ docker compose up -d
 ```
 
 ## Create the topics
 
-In a new terminal, change directory to where we have our docker-compose file (`04-Implement-Topics-And-Partitions`) and run the following commands (make sure to replace `<container_id>` with the actual container ID):
+In a new terminal, run the following commands (make sure to replace `<container_id>` with the actual `broker` container ID, which you can find with `docker ps`):
 
 ```bash
 docker exec -it <container_id> kafka-topics --create --bootstrap-server :9092 --replication-factor 1 --partitions 1 --topic device-event
@@ -63,11 +63,9 @@ We are now producing simulated device events.
 
 ## Create a simple console consumer
 
-To see the messages, let's run our usual console consumer. In a new terminal `cd` into the `04-Implement-Topics-And-Partitions` directory and then
-run the Kafka consumer.
+To see the messages, let's run our usual console consumer. In a new terminal run the Kafka consumer (replace `<container_id>` with the broker container ID).
 
 ```
-$ cd docker
 docker exec <container_id> kafka-console-consumer --bootstrap-server :9092 --topic device-heartbeat
 ```
 
