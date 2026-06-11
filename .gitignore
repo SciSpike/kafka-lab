@@ -263,7 +263,7 @@ modules.xml
 .LSOverride
 
 # Icon must end with two \r
-Icon
+Icon
 
 # Thumbnails
 ._*
@@ -333,3 +333,6 @@ $RECYCLE.BIN/
 # the above line is passed to gitignore.io; add anything custom below, then execute .gitignore.sh
 .data/
 .idea/
+
+# Instructor guide is maintained in a separate, private repo
+instructors/

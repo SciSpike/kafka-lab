@@ -1,0 +1,87 @@
+# 3-broker Kafka cluster (KRaft mode) for classroom exercise C1.
+#
+# This is SEPARATE from the main single-broker stack in ../../../docker.
+# It uses its own project name, network, container names and host ports, so it can
+# run alongside (or instead of) the single-broker stack without conflicting.
+#
+# Start:  docker compose -f docker-compose-cluster.yaml -p kafka-cluster up -d
+# Stop:   docker compose -f docker-compose-cluster.yaml -p kafka-cluster down
+#
+# Each node runs in KRaft "combined" mode (it is both a broker and a controller),
+# so there are three brokers AND a three-voter controller quorum.
+
+x-broker-common: &broker-common
+  image: confluentinc/cp-kafka:7.5.1
+  networks:
+    - cluster_network
+  environment: &broker-env
+    KAFKA_PROCESS_ROLES: broker,controller
+    KAFKA_CONTROLLER_QUORUM_VOTERS: 1@broker-1:29093,2@broker-2:29093,3@broker-3:29093
+    KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+    KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+    KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+    # Replicate the internal topics across all three brokers so the cluster itself
+    # survives a broker loss (this is what makes the failover demo meaningful).
+    KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+    KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+    KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 2
+    KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+    # A fixed cluster id so all three nodes format into the SAME cluster.
+    CLUSTER_ID: 4L6g3nShT-eMCtK--X86sw
+
+services:
+  broker-1:
+    <<: *broker-common
+    container_name: broker-1
+    hostname: broker-1
+    ports:
+      - "19092:9092"
+    environment:
+      <<: *broker-env
+      KAFKA_NODE_ID: 1
+      KAFKA_LISTENERS: PLAINTEXT://broker-1:29092,CONTROLLER://broker-1:29093,PLAINTEXT_HOST://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker-1:29092,PLAINTEXT_HOST://localhost:19092
+
+  broker-2:
+    <<: *broker-common
+    container_name: broker-2
+    hostname: broker-2
+    ports:
+      - "29092:9092"
+    environment:
+      <<: *broker-env
+      KAFKA_NODE_ID: 2
+      KAFKA_LISTENERS: PLAINTEXT://broker-2:29092,CONTROLLER://broker-2:29093,PLAINTEXT_HOST://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker-2:29092,PLAINTEXT_HOST://localhost:29092
+
+  broker-3:
+    <<: *broker-common
+    container_name: broker-3
+    hostname: broker-3
+    ports:
+      - "39092:9092"
+    environment:
+      <<: *broker-env
+      KAFKA_NODE_ID: 3
+      KAFKA_LISTENERS: PLAINTEXT://broker-3:29092,CONTROLLER://broker-3:29093,PLAINTEXT_HOST://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker-3:29092,PLAINTEXT_HOST://localhost:39092
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:v0.7.2
+    container_name: cluster-kafka-ui
+    depends_on:
+      - broker-1
+      - broker-2
+      - broker-3
+    ports:
+      - "8085:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: cluster
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: broker-1:29092,broker-2:29092,broker-3:29092
+    networks:
+      - cluster_network
+
+networks:
+  cluster_network:
+    name: kafka_cluster_network
+    driver: bridge

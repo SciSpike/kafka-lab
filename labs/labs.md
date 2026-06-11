@@ -31,3 +31,10 @@ Note that all the labs assume that you have successfully installed docker.
 
   - [Word count lab using Kafka Streams](06-Streaming/wordcount-kafka-streaming.md)
   - [IoT example using Kafka Streams](06-Streaming/iot-kafka-lab.md)
+
+---
+
+> 🏫 **Instructor-led classroom track.** The labs above are the self-paced 2×3h online course.
+> A separate set of richer, failure-focused exercises for the 2-full-day classroom format lives
+> in [classroom/classroom-labs.md](classroom/classroom-labs.md). It is not part of the online
+> course.
