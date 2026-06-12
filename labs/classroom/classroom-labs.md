@@ -56,10 +56,9 @@ leaves off, but instead of *reasoning* about the failures you will *trigger* the
   *(answers find-the-flaw question 2)*
 - ✅ [A3 — Rebalancing: in-flight reprocessing when a consumer dies](A3-Rebalance-Reprocessing/rebalance-reprocessing.md)
   *(answers find-the-flaw question 3)*
-- 🔜 A4 — The slow-poll eviction: `max.poll.interval.ms` and the endless rebalance
-  *(planned — best delivered as a small **coding** exercise: faithfully triggering and fixing
-  this needs a real `sleep` inside the consumer's processing loop, which the language-neutral
-  console tools can't reproduce reliably across operating systems)*
+- ✅ [A4 — The slow-poll eviction: `max.poll.interval.ms` and the endless rebalance](A4-Slow-Poll-Eviction/slow-poll-eviction.md)
+  *(uses a small provided Java program, built/run via Docker like the online labs — a real
+  `sleep` in the poll loop triggers the eviction deterministically on any OS)*
 
 ### Theme B — Performance tuning
 
