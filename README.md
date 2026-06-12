@@ -132,6 +132,7 @@ per-exercise staging, timing and talking points, see the separate instructor gui
 * **Streaming APIs for Kafka** (Lecture) + IoT case study
   * Lead-in: [C4 — Log compaction & tombstones: a topic as a changelog of state](labs/classroom/C4-Log-Compaction/log-compaction.md)
   * Lab: [Word count with Kafka Streams](labs/06-Streaming/wordcount-kafka-streaming.md)
+  * Lab: [Fault-tolerant state — heartbeat monitor in Kafka Streams](labs/06-Streaming/heartbeat-streams-lab.md) *(fixes the Chapter-3 monitor's restart flaw)*
   * Lab: [IoT streaming case study](labs/06-Streaming/iot-kafka-lab.md)
 * **Kafka Administration and Integration** (Lecture) — Connect, administration, monitoring, tooling
   * [B1 — Producer performance tuning](labs/classroom/B1-Producer-Tuning/producer-tuning.md)
