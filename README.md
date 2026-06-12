@@ -29,7 +29,10 @@ There are **two tracks**, both running on the same Docker stack:
   real-world Kafka failures (lost writes, duplicate consumption) and measure the effect of
   tuning knobs, with almost no Java: [`labs/classroom/classroom-labs.md`](labs/classroom/classroom-labs.md)
 
-## Outline
+## Outline — Online course (2 × 3 hours)
+
+The self-paced online format: each lecture is paired with a short, follow-the-steps lab. Same slides
+as the classroom course below — the classroom course just adds many more (and richer) exercises.
 
 *DAY 1*
 
@@ -90,3 +93,47 @@ There are **two tracks**, both running on the same Docker stack:
   * Kafka monitoring
   * Security
 * Exactly once delivery
+
+## Outline — Classroom course (2 full days)
+
+**Same slides and lecture flow as the online course above** — the only difference is the exercises.
+The two online sessions use light "follow the steps" labs; over two full days there is time for the
+richer, failure-focused exercises in [`labs/classroom/`](labs/classroom/classroom-labs.md), which
+deliberately trigger real-world Kafka problems and measure the effect of tuning knobs. The lecture
+headings below match the slide deck; under each one are the exercises that belong with it. (For
+per-exercise staging, timing and talking points, see the separate instructor guide.)
+
+*DAY 1*
+
+* **Introduction** (Lecture)
+  * Lab: [Verify the installation — Hello World, Kafka](labs/01-Verify-Installation/hello-world-kafka.md)
+* **Introduction to Kafka** (Lecture) — under the hood; topics, partitions, producers, consumers
+  * Lab: create a topic and pass a message (the console part of Hello World, above)
+  * The reference implementation in Java: [Producer](labs/02-Publish-And-Subscribe/producer.md) → [Consumer](labs/02-Publish-And-Subscribe/consumer.md)
+* **Dissecting the first example** (Lecture / Discussion)
+* **Design of Kafka topics and partitions** (Lecture + group project)
+  * Group project: [Designing topics and partitions](labs/03-Designing-Topics-And-Partitions/design.md)
+  * [C3 — Ordering & keys](labs/classroom/C3-Ordering-And-Keys/ordering-and-keys.md) — proves the partition-key choice from the design
+* **Implement topics and partitions** (Lab)
+  * Lab: [Heartbeat monitor](labs/04-Implement-Topics-And-Partitions/topics-and-partitions.md)
+  * Discussion: [find-the-flaw](labs/04-Implement-Topics-And-Partitions/find-the-flaw.md) — sets up the Exactly-once exercises on Day 2
+
+*DAY 2*
+
+* **Scaling Kafka** (Lecture) — brokers, clusters, mirroring, consumer groups
+  * [C1 — Multi-broker cluster: replication, ISR, `acks=all`, failover](labs/classroom/C1-Multi-Broker-Cluster/multi-broker-cluster.md)
+  * [A3 — Rebalancing: in-flight reprocessing when a consumer dies](labs/classroom/A3-Rebalance-Reprocessing/rebalance-reprocessing.md)
+  * [A4 — The slow-poll eviction (`max.poll.interval.ms`)](labs/classroom/A4-Slow-Poll-Eviction/slow-poll-eviction.md) *(provided Java; build & run via Docker)*
+  * [B2 — Partitions & consumer parallelism: where adding consumers stops helping](labs/classroom/B2-Partitions-And-Parallelism/partitions-and-parallelism.md)
+  * [C2 — Consumer lag & backpressure](labs/classroom/C2-Consumer-Lag/consumer-lag.md)
+* **Streaming APIs for Kafka** (Lecture) + IoT case study
+  * Lead-in: [C4 — Log compaction & tombstones: a topic as a changelog of state](labs/classroom/C4-Log-Compaction/log-compaction.md)
+  * Lab: [Word count with Kafka Streams](labs/06-Streaming/wordcount-kafka-streaming.md)
+  * Lab: [IoT streaming case study](labs/06-Streaming/iot-kafka-lab.md)
+* **Kafka Administration and Integration** (Lecture) — Connect, administration, monitoring, tooling
+  * [B1 — Producer performance tuning](labs/classroom/B1-Producer-Tuning/producer-tuning.md)
+  * [B3 — Consumer fetch tuning (`fetch.min.bytes`)](labs/classroom/B3-Consumer-Fetch-Tuning/consumer-fetch-tuning.md)
+  * [C5 — Poison pill, dead-letter topics & offset reset](labs/classroom/C5-Poison-Pill-And-DLQ/poison-pill-and-dlq.md)
+* **Exactly-once delivery** (Lecture)
+  * [A1 — Crash before the ack: `acks` and lost writes](labs/classroom/A1-Crash-Before-Ack/crash-before-ack.md)
+  * [A2 — Duplicate consumption & idempotent consumers](labs/classroom/A2-Duplicate-Consumption/duplicate-consumption.md)
