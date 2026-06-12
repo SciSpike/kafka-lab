@@ -66,8 +66,8 @@ A measurable extension of the online [`../02-Publish-And-Subscribe/performance.m
 lab — no Java rebuilds, just sweep flags and record the numbers.
 
 - ✅ [B1 — Producer throughput vs latency: batching, compression, acks](B1-Producer-Tuning/producer-tuning.md)
-- 🔜 B2 — Partitions & consumer parallelism: where adding consumers stops helping *(planned)*
-- 🔜 B3 — Consumer fetch tuning: `fetch.min.bytes` and the latency/efficiency tradeoff *(planned)*
+- ✅ [B2 — Partitions & consumer parallelism: where adding consumers stops helping](B2-Partitions-And-Parallelism/partitions-and-parallelism.md)
+- ✅ [B3 — Consumer fetch tuning: `fetch.min.bytes` and the latency/efficiency tradeoff](B3-Consumer-Fetch-Tuning/consumer-fetch-tuning.md)
 
 ### Theme C — Richer real-world scenarios
 
@@ -77,4 +77,4 @@ lab — no Java rebuilds, just sweep flags and record the numbers.
 - ✅ [C4 — Log compaction & tombstones: a topic as a changelog of state](C4-Log-Compaction/log-compaction.md)
 - ✅ [C5 — Poison pill, dead-letter topics & offset reset](C5-Poison-Pill-And-DLQ/poison-pill-and-dlq.md)
 
-> ✅ = ready to run · 🔜 = designed, not yet written up
+> ✅ = ready to run. All twelve exercises are written and tested end-to-end.
