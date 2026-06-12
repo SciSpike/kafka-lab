@@ -1,0 +1,32 @@
+# Optional add-on: a Schema Registry for the D1 schema-evolution lab.
+#
+# It joins whichever Kafka stack you already have running (single-broker OR the classroom cluster)
+# via the shared `docker_kafka_network`, so start your usual stack first, then start this on top:
+#
+#   docker compose -f docker-compose-schema-registry.yaml up -d
+#
+# REST API + schemas land on http://localhost:8081. Stop it with `down` when you're finished.
+#
+# Uses Confluent's `cp-schema-registry` (free to self-host). For a strictly OSI-licensed registry
+# with the same API, swap the image for `ghcr.io/aiven-open/karapace:latest` (Karapace) — the lab
+# commands are unchanged.
+
+services:
+  schema-registry:
+    image: confluentinc/cp-schema-registry:7.9.0
+    container_name: schema-registry
+    ports:
+      - "8081:8081"
+    environment:
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry
+      SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: broker:29092
+      # RF=1 so it works on the single broker too (fine on the 3-broker cluster as well).
+      SCHEMA_REGISTRY_KAFKASTORE_TOPIC_REPLICATION_FACTOR: 1
+    networks:
+      - kafka_network
+
+networks:
+  kafka_network:
+    name: docker_kafka_network
+    external: true

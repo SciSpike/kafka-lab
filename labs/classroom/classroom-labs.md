@@ -90,4 +90,12 @@ lab — no Java rebuilds, just sweep flags and record the numbers.
 - ✅ [C4 — Log compaction & tombstones: a topic as a changelog of state](C4-Log-Compaction/log-compaction.md)
 - ✅ [C5 — Poison pill, dead-letter topics & offset reset](C5-Poison-Pill-And-DLQ/poison-pill-and-dlq.md)
 
-> ✅ = ready to run. All thirteen exercises are written and tested end-to-end.
+### Bonus — optional, outside the timed flow
+
+These stand alone — run them when a particular group asks for the topic; they aren't part of the
+seven-chapter schedule.
+
+- ✅ [D1 — Schema Registry: schema evolution & the breaking change](D1-Schema-Registry/schema-registry.md)
+  *(adds one extra service — a Schema Registry — on top of your stack; console-tools only)*
+
+> ✅ = ready to run. The thirteen core exercises plus the bonus lab are written and tested end-to-end.
