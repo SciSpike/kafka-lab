@@ -29,7 +29,7 @@ partitions).
 
 ## Prerequisites
 
-The shared single-broker stack running (`cd docker && docker compose up -d`). You'll want several
+The **classroom cluster** running (start it once at the beginning of the course and leave it up — see [classroom-labs.md](../classroom-labs.md)). You'll want several
 terminals — one per consumer, plus one for inspecting the group.
 
 ## Step 1 — A 3-partition topic and a backlog

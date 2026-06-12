@@ -31,7 +31,7 @@ account — whatever must stay in order.
 
 ## Prerequisites
 
-The shared single-broker stack running (`cd docker && docker compose up -d`).
+The **classroom cluster** running (start it once at the beginning of the course and leave it up — see [classroom-labs.md](../classroom-labs.md)).
 
 ## Step 1 — Keyed: each device stays in one partition, in order
 

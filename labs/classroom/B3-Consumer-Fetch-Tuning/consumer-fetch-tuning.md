@@ -32,7 +32,7 @@ You'll *see* that delay directly.
 
 ## Prerequisites
 
-The shared single-broker stack running (`cd docker && docker compose up -d`). Two terminals.
+The **classroom cluster** running (start it once at the beginning of the course and leave it up — see [classroom-labs.md](../classroom-labs.md)). Two terminals.
 
 ## Setup — a topic and a slow trickle of records
 

@@ -36,7 +36,7 @@ Both come down to moving the committed offset, which is exactly what `--reset-of
 
 ## Prerequisites
 
-The shared single-broker stack running (`cd docker && docker compose up -d`).
+The **classroom cluster** running (start it once at the beginning of the course and leave it up — see [classroom-labs.md](../classroom-labs.md)).
 
 ## Setup — a stream with a poison pill
 

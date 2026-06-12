@@ -34,7 +34,7 @@ is again just writing each record to a file.
 
 ## Prerequisites
 
-The shared single-broker stack running (`cd docker && docker compose up -d`). You'll use **three
+The **classroom cluster** running (start it once at the beginning of the course and leave it up — see [classroom-labs.md](../classroom-labs.md)). You'll use **three
 terminals**: two for the worker consumers, one for inspecting the group.
 
 ## Setup — a 4-partition topic with 40 tasks

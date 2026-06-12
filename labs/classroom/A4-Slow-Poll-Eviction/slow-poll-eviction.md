@@ -52,7 +52,7 @@ The defaults are deliberately **broken** (10 records × 1000 ms = 10 s of work, 
 
 ## Prerequisites
 
-The shared single-broker stack running (`cd docker && docker compose up -d`), plus the Docker-based
+The **classroom cluster** running (start it once at the beginning of the course and leave it up — see [classroom-labs.md](../classroom-labs.md)), plus the Docker-based
 Maven/Java toolchain used by the online labs (`maven:3-jdk-11` and `openjdk:11` images).
 
 ## Step 1 — Build the consumer

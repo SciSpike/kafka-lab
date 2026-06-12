@@ -1,0 +1,95 @@
+# Classroom Kafka stack — a 3-broker KRaft cluster.
+#
+# This is the standing environment for the INSTRUCTOR-LED CLASSROOM course: start it once at the
+# beginning and leave it running for the whole two days. It is a drop-in replacement for the lean
+# single-broker stack (docker-compose.yaml) used by the online course — node 1 is named `broker`,
+# it lives on the same `docker_kafka_network`, and the UI is on the same port 8080 — so every lab
+# command (`docker exec broker …`, throwaway clients on `docker_kafka_network`, the Java labs) works
+# unchanged. The difference is that there are three brokers, so the replication / failover lab (C1)
+# has something real to work with.
+#
+# Run ONE stack at a time (this or the single-broker one), since both use the name `broker`,
+# the `docker_kafka_network` network, and port 8080.
+#
+#   Start:  docker compose -f docker-compose-classroom.yaml up -d
+#   Stop:   docker compose -f docker-compose-classroom.yaml down
+#
+# Each node runs in KRaft "combined" mode (broker + controller), so there are three brokers AND a
+# three-voter controller quorum. NOTE for the C1 lab: only ever stop ONE broker at a time — stopping
+# two loses the controller-quorum majority and freezes the cluster.
+
+x-broker-common: &broker-common
+  image: confluentinc/cp-kafka:7.5.1
+  networks:
+    - kafka_network
+  environment: &broker-env
+    KAFKA_PROCESS_ROLES: broker,controller
+    KAFKA_CONTROLLER_QUORUM_VOTERS: 1@broker:29093,2@broker-2:29093,3@broker-3:29093
+    KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+    KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+    KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+    # Internal topics replicated across all three brokers so the cluster survives a broker loss.
+    KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+    KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+    KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 2
+    KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+    # Keep each broker lightweight so three of them fit comfortably on a laptop (~350 MB each).
+    KAFKA_HEAP_OPTS: "-Xms256m -Xmx512m"
+    # A fixed cluster id so all three nodes format into the SAME cluster.
+    CLUSTER_ID: 4L6g3nShT-eMCtK--X86sw
+
+services:
+  # Node 1 is named `broker` so every existing lab command (`docker exec broker …`,
+  # `--bootstrap-server broker:29092`) works exactly as on the single-broker stack.
+  broker:
+    <<: *broker-common
+    container_name: broker
+    hostname: broker
+    environment:
+      <<: *broker-env
+      KAFKA_NODE_ID: 1
+      KAFKA_LISTENERS: PLAINTEXT://broker:29092,CONTROLLER://broker:29093,PLAINTEXT_HOST://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:29092,PLAINTEXT_HOST://broker:9092
+
+  broker-2:
+    <<: *broker-common
+    container_name: broker-2
+    hostname: broker-2
+    environment:
+      <<: *broker-env
+      KAFKA_NODE_ID: 2
+      KAFKA_LISTENERS: PLAINTEXT://broker-2:29092,CONTROLLER://broker-2:29093,PLAINTEXT_HOST://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker-2:29092,PLAINTEXT_HOST://broker-2:9092
+
+  broker-3:
+    <<: *broker-common
+    container_name: broker-3
+    hostname: broker-3
+    environment:
+      <<: *broker-env
+      KAFKA_NODE_ID: 3
+      KAFKA_LISTENERS: PLAINTEXT://broker-3:29092,CONTROLLER://broker-3:29093,PLAINTEXT_HOST://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker-3:29092,PLAINTEXT_HOST://broker-3:9092
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:v0.7.2
+    container_name: kafka-ui
+    depends_on:
+      - broker
+      - broker-2
+      - broker-3
+    ports:
+      - "8080:8080"
+    environment:
+      DYNAMIC_CONFIG_ENABLED: 'true'
+      KAFKA_CLUSTERS_0_NAME: classroom
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: broker:29092,broker-2:29092,broker-3:29092
+    networks:
+      - kafka_network
+
+networks:
+  kafka_network:
+    # Same network name as the single-broker stack, so throwaway clients that use
+    # `--network docker_kafka_network` work unchanged.
+    name: docker_kafka_network
+    driver: bridge

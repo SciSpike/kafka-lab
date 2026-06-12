@@ -38,7 +38,7 @@ idempotent. No Java — a console consumer plays the role of the application, an
 
 ## Prerequisites
 
-The shared Kafka stack running (`cd docker && docker compose up -d`).
+The **classroom cluster** running (start it once at the beginning of the course and leave it up — see [classroom-labs.md](../classroom-labs.md)).
 
 ## Setup — a topic and ten orders
 

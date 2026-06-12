@@ -34,7 +34,7 @@ exactly what happened, so there is no Java to read.
 
 ## Prerequisites
 
-The shared Kafka stack running (`cd docker && docker compose up -d`). Two terminals.
+The **classroom cluster** running (start it once at the beginning of the course and leave it up — see [classroom-labs.md](../classroom-labs.md)). Two terminals.
 
 ## Setup — create the topic
 

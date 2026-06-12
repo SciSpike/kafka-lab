@@ -32,7 +32,7 @@ older and older before anyone acts on it, and in the worst case it ages out of t
 
 ## Prerequisites
 
-The shared single-broker stack running (`cd docker && docker compose up -d`).
+The **classroom cluster** running (start it once at the beginning of the course and leave it up — see [classroom-labs.md](../classroom-labs.md)).
 
 ## Setup — a backlog
 

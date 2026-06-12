@@ -21,13 +21,20 @@ which needs a real delay inside the consumer's poll loop), we **provide** ready-
 you build and run through Docker — exactly like the online publisher/subscriber lab. You read and
 run it; you never write it.
 
-Every exercise reuses the **same Docker stack** as the online labs. If it is not already
-running, start it from the repository's `docker` directory:
+This classroom track runs on a **3-broker Kafka cluster** — start it **once** at the very
+beginning of the course and leave it running for the whole two days:
 
 ```bash
 cd docker
-docker compose up -d
+docker compose -f docker-compose-classroom.yaml up -d
 ```
+
+It's a drop-in superset of the online course's single-broker stack: node 1 is still named `broker`,
+on the same `docker_kafka_network`, with the UI on <http://localhost:8080> — so every command in
+these labs works exactly as it would on one broker. The difference is simply that there are three
+brokers, which the replication/failover lab ([C1](C1-Multi-Broker-Cluster/multi-broker-cluster.md))
+needs. (The online course's lean single broker — `docker compose up -d` — also runs every lab here
+*except* C1.)
 
 A few conventions used throughout this track:
 

@@ -21,13 +21,16 @@ We describe how [here](docker/starting-docker.md).
 
 ## Link to the labs
 
-There are **two tracks**, both running on the same Docker stack:
+There are **two tracks**, each with its own Docker stack — start whichever one you're running:
 
-- **Online (2×3h, self-paced)** — the standard follow-the-instructions labs:
+- **Online (2×3h, self-paced)** — the standard follow-the-instructions labs, on the lean
+  **single-broker** stack (`cd docker && docker compose up -d`):
   [`labs/labs.md`](labs/labs.md)
 - **Classroom (2 full days, instructor-led)** — richer exercises that deliberately trigger
   real-world Kafka failures (lost writes, duplicate consumption) and measure the effect of
-  tuning knobs, with almost no Java: [`labs/classroom/classroom-labs.md`](labs/classroom/classroom-labs.md)
+  tuning knobs, on a **3-broker cluster** started once and left running
+  (`cd docker && docker compose -f docker-compose-classroom.yaml up -d`):
+  [`labs/classroom/classroom-labs.md`](labs/classroom/classroom-labs.md)
 
 ## Outline — Online course (2 × 3 hours)
 
