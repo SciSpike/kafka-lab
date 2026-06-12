@@ -175,8 +175,8 @@ Make a small results table. For each `acks` value, note the average throughput f
 | `1`    |                              | real offset             | leader only    |
 | `all`  |                              | real offset             | strongest\*    |
 
-\* On this single-broker cluster `all` behaves like `1` because there are no replicas to wait
-for — revisit this in C1 with a 3-broker cluster.
+\* Because `crashtest` is a **single-replica (RF=1)** topic, `all` behaves like `1` here — there are
+no followers to wait for. C1 revisits this with a replicated (RF=3) topic, where `acks=all` finally bites.
 
 ## Cleanup
 

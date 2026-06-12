@@ -112,11 +112,12 @@ Fill in a table as you go:
   compress) and with compressible payloads — try a larger `--record-size` and see the MB/sec gap
   widen.
 - **`acks` costs throughput for safety**, the same dial you crashed in [A1](../A1-Crash-Before-Ack/crash-before-ack.md).
-  On this **single-broker** cluster `acks=all` ≈ `acks=1` (no replicas to wait for) — the gap only
-  becomes dramatic on a real multi-broker cluster (exercise C1).
-- **Single-broker caveat:** absolute numbers here are not production figures — there's no
-  replication, no network hop between brokers, and the client and broker share your CPU. Treat
-  this as learning the *shape* of the tradeoffs, not benchmarking your future cluster.
+  Because `perftest` is a **single-replica (RF=1)** topic, `acks=all` ≈ `acks=1` here — there are no
+  followers to wait for. Re-create it with `--replication-factor 3` on the classroom cluster and the
+  gap becomes real: `acks=all` then waits for the round-trip to the followers (see C1).
+- **Local caveat:** absolute numbers here are not production figures — on an RF=1 topic there's no
+  replication round-trip, and the clients and brokers all share your laptop's CPU. Treat this as
+  learning the *shape* of the tradeoffs, not benchmarking your future cluster.
 
 > 💡 **Want to feel batching properly?** Re-run the sweep with `--throughput 20000` (rate-limited
 > instead of flat-out). When the producer is *not* saturated, `linger.ms` has room to actually
