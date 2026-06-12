@@ -141,3 +141,4 @@ per-exercise staging, timing and talking points, see the separate instructor gui
 * **Exactly-once delivery** (Lecture)
   * [A1 — Crash before the ack: `acks` and lost writes](labs/classroom/A1-Crash-Before-Ack/crash-before-ack.md)
   * [A2 — Duplicate consumption & idempotent consumers](labs/classroom/A2-Duplicate-Consumption/duplicate-consumption.md)
+  * [A5 — Exactly-once: transactions & `read_committed`](labs/classroom/A5-Exactly-Once/exactly-once.md) *(the capstone)*

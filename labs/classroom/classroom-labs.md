@@ -70,6 +70,8 @@ leaves off, but instead of *reasoning* about the failures you will *trigger* the
 - ✅ [A4 — The slow-poll eviction: `max.poll.interval.ms` and the endless rebalance](A4-Slow-Poll-Eviction/slow-poll-eviction.md)
   *(uses a small provided Java program, built/run via Docker like the online labs — a real
   `sleep` in the poll loop triggers the eviction deterministically on any OS)*
+- ✅ [A5 — Exactly-once: transactions & `read_committed`](A5-Exactly-Once/exactly-once.md)
+  *(the capstone of the delivery-guarantee arc; provided Java transactional producer)*
 
 ### Theme B — Performance tuning
 
@@ -88,4 +90,4 @@ lab — no Java rebuilds, just sweep flags and record the numbers.
 - ✅ [C4 — Log compaction & tombstones: a topic as a changelog of state](C4-Log-Compaction/log-compaction.md)
 - ✅ [C5 — Poison pill, dead-letter topics & offset reset](C5-Poison-Pill-And-DLQ/poison-pill-and-dlq.md)
 
-> ✅ = ready to run. All twelve exercises are written and tested end-to-end.
+> ✅ = ready to run. All thirteen exercises are written and tested end-to-end.
