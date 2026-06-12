@@ -12,10 +12,14 @@ exercises do the opposite: they **deliberately break things** so you can see —
 own eyes — the failure modes that bite real Kafka projects, and then measure the effect of
 the knobs you can turn to fix them.
 
-A guiding principle of this track: **almost no Java**. Everything is driven from Kafka's
-own command-line tools (which ship inside the broker container), plus a bit of shell. That
-way the lessons are the same whether your daily language is Java, Python, Go, C#, or
-something else — you can re-implement any of these patterns in your own stack afterwards.
+A guiding principle of this track: **students never have to develop code.** Most exercises are
+driven entirely from Kafka's own command-line tools (which ship inside the broker container),
+plus a bit of shell — so the lessons are the same whether your daily language is Java, Python,
+Go, C#, or something else, and you can re-implement any pattern in your own stack afterwards.
+Where the command-line tools genuinely can't express a scenario (only [A4](A4-Slow-Poll-Eviction/slow-poll-eviction.md),
+which needs a real delay inside the consumer's poll loop), we **provide** ready-to-run Java that
+you build and run through Docker — exactly like the online publisher/subscriber lab. You read and
+run it; you never write it.
 
 Every exercise reuses the **same Docker stack** as the online labs. If it is not already
 running, start it from the repository's `docker` directory:
