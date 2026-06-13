@@ -1,9 +1,10 @@
 # C1 — Multi-broker cluster: replication, ISR, `acks=all`, and broker failure
 
-> 🏫 **Classroom track** · ~45 min · This is where [A1](../A1-Crash-Before-Ack/crash-before-ack.md)
-> pays off. The Kafka stack you've been using all course is **already a 3-broker cluster** — here we
-> finally use the second and third brokers: replicate a topic across them, kill one, and watch your
-> data survive.
+> 🏫 **Classroom track** · ~45 min · The Kafka stack you've been using all course is **already a
+> 3-broker cluster** — here we finally use the second and third brokers: replicate a topic across
+> them, kill one, and watch your data survive. This is also where the `acks=all` durability setting
+> first earns its keep — you'll push the `acks` dial further in the
+> [exactly-once labs](../A1-Crash-Before-Ack/crash-before-ack.md) later in the course.
 
 ## The idea
 
@@ -14,7 +15,7 @@ are **followers** that copy from it. The set of replicas that are fully caught u
 
 Two settings decide how safe a write is:
 
-- **`acks`** (producer side, from A1): `all` means "wait until every in-sync replica has the
+- **`acks`** (producer side): `all` means "wait until every in-sync replica has the
   record", not just the leader.
 - **`min.insync.replicas`** (topic side): the minimum ISR size for an `acks=all` write to be
   *accepted at all*. If the ISR drops below this, the leader **rejects** `acks=all` writes rather
@@ -222,8 +223,9 @@ docker exec broker kafka-topics --bootstrap-server :9092 --describe --topic pay-
 - **Availability vs. durability is a genuine tradeoff**, not a bug. `acks=1` stayed up but risked
   loss; strict `acks=all` refused the risk but stopped accepting writes. Your business decides
   which failure is worse.
-- **Tie back to A1:** the `acks=0`/`acks=1`/`acks=all` dial you crashed earlier only reaches its
-  full meaning here, where there are real replicas for `all` to wait on.
+- **Sets up the exactly-once labs ([A1](../A1-Crash-Before-Ack/crash-before-ack.md)):** the
+  `acks=0`/`acks=1`/`acks=all` dial — and what a producer crash does to in-flight records — only
+  reaches its full meaning because of the replication you just set up here.
 
 ### Optional explorations
 

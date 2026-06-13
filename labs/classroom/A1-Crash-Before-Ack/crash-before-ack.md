@@ -18,7 +18,7 @@ The `acks` setting decides how much confirmation the producer waits for:
 | ------ | --------------------------------------------- | ---- |
 | `0`    | it has written the record to its socket — **no confirmation at all** | records can vanish and the producer never knows |
 | `1`    | the **leader** broker has written it to its log | a record acked by a leader that then fails before replication can be lost |
-| `all`  | the leader **and all in-sync replicas** have it | strongest; needs more than one broker to mean anything (see C1) |
+| `all`  | the leader **and all in-sync replicas** have it | strongest; needs more than one broker to mean anything (as you saw in C1) |
 
 In this exercise you will see the difference between a record that is **confirmed by the
 cluster** and one that is merely **"sent" but unconfirmed** — and what a crash does to each.
@@ -156,8 +156,8 @@ Tie this back to [`find-the-flaw.md`](../../04-Implement-Topics-And-Partitions/f
 1. **"Messages in the buffer that have not been sent"** — that buffer is real (client-side
    batching). A hard crash abandons it. A graceful shutdown (close/flush) drains it.
 2. **`acks` is a durability-vs-speed dial, not a yes/no.** `acks=0` is fastest and least
-   safe; `acks=all` is safest and needs replication to be meaningful (see exercise C1, where
-   we add more brokers).
+   safe; `acks=all` is safest and needs replication to be meaningful (as you saw in C1, with the
+   3-broker cluster).
 3. **The fix is rarely "just set `acks=all`".** Real producers also rely on:
    - `enable.idempotence=true` — so a retried send isn't written twice;
    - `retries` / `delivery.timeout.ms` — so transient failures are retried instead of dropped;
@@ -176,7 +176,7 @@ Make a small results table. For each `acks` value, note the average throughput f
 | `all`  |                              | real offset             | strongest\*    |
 
 \* Because `crashtest` is a **single-replica (RF=1)** topic, `all` behaves like `1` here — there are
-no followers to wait for. C1 revisits this with a replicated (RF=3) topic, where `acks=all` finally bites.
+no followers to wait for. You saw the difference in C1, on a replicated (RF=3) topic where `acks=all` finally bites.
 
 ## Cleanup
 
