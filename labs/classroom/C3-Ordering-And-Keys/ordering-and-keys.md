@@ -106,8 +106,8 @@ Partition:2   A-reading-5
 ```
 
 The **same device's** readings are now split across partitions. Reading 1 is in partition 2,
-reading 2 is in partition 0. If two consumers in a group each take one of those partitions (as in
-[A3](../A3-Rebalance-Reprocessing/rebalance-reprocessing.md)), they will process `A-reading-2` and
+reading 2 is in partition 0. If two consumers in a group each take one of those partitions (which is
+exactly what happens in [A3](../A3-Rebalance-Reprocessing/rebalance-reprocessing.md)), they will process `A-reading-2` and
 `A-reading-1` **independently and in parallel** — there is nothing to stop reading 2 being handled
 before reading 1. The device's order is gone.
 

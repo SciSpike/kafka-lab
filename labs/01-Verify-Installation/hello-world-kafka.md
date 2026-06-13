@@ -30,7 +30,7 @@ You should see something like this:
 ```
 CONTAINER ID   IMAGE                                COMMAND                  CREATED          STATUS          PORTS                                                                                                                             NAMES
 7b25e8945eb9   confluentinc/confluent-local:7.4.1   "/etc/confluent/dock…"   10 minutes ago   Up 10 minutes   0.0.0.0:8082->8082/tcp, :::8082->8082/tcp, 0.0.0.0:9092->9092/tcp, :::9092->9092/tcp, 0.0.0.0:9101->9101/tcp, :::9101->9101/tcp   broker
-0fd43a1494d9   provectuslabs/kafka-ui:latest        "/bin/sh -c 'java --…"   10 minutes ago   Up 10 minutes   0.0.0.0:8080->8080/tcp, :::8080->8080/tcp                                                                                         docker-kafka-ui-1
+0fd43a1494d9   provectuslabs/kafka-ui:v0.7.2        "/bin/sh -c 'java --…"   10 minutes ago   Up 10 minutes   0.0.0.0:8080->8080/tcp, :::8080->8080/tcp                                                                                         docker-kafka-ui-1
 ```
 Notice the id of the container and copy it. 
 The CONTAINER ID of the Kafka container is `7b25e8945eb9` in the example above.

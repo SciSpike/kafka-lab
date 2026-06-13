@@ -111,7 +111,7 @@ Fill in a table as you go:
 - **Compression** trades CPU for bytes-on-the-wire. Its payoff grows with bigger batches (more to
   compress) and with compressible payloads — try a larger `--record-size` and see the MB/sec gap
   widen.
-- **`acks` costs throughput for safety**, the same dial you crashed in [A1](../A1-Crash-Before-Ack/crash-before-ack.md).
+- **`acks` costs throughput for safety** — the same dial you'll crash a producer on in [A1](../A1-Crash-Before-Ack/crash-before-ack.md).
   Because `perftest` is a **single-replica (RF=1)** topic, `acks=all` ≈ `acks=1` here — there are no
   followers to wait for. Re-create it with `--replication-factor 3` on the classroom cluster and the
   gap becomes real: `acks=all` then waits for the round-trip to the followers (see C1).

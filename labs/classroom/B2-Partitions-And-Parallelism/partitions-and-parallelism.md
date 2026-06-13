@@ -3,7 +3,7 @@
 > 🏫 **Classroom track** · ~35 min · A natural follow-on to
 > [A3](../A3-Rebalance-Reprocessing/rebalance-reprocessing.md) and the partition-sizing reasoning in
 > the [patient-monitoring design](../../04-Implement-Topics-And-Partitions/patient-monitoring-exercise-full.md).
-> The question: if my consumers can't keep up (lag is rising — see [C2](../C2-Consumer-Lag/consumer-lag.md)),
+> The question: if my consumers can't keep up (lag rising, as you saw in [C2](../C2-Consumer-Lag/consumer-lag.md)),
 > can I just keep adding consumers? Answer: only up to a hard ceiling.
 
 ## The idea

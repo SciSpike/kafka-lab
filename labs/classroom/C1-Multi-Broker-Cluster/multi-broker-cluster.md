@@ -229,9 +229,9 @@ docker exec broker kafka-topics --bootstrap-server :9092 --describe --topic pay-
 
 ### Optional explorations
 
-- Re-run [B1 (producer tuning)](../B1-Producer-Tuning/producer-tuning.md) against a RF=3 topic and
-  compare `acks=1` vs `acks=all` throughput — now the gap is real, because `all` waits for the
-  network round-trip to followers.
+- When you reach [B1 (producer tuning)](../B1-Producer-Tuning/producer-tuning.md), try it against a
+  RF=3 topic and compare `acks=1` vs `acks=all` throughput — the gap is real here, because `all`
+  waits for the network round-trip to followers.
 - Create a topic with multiple partitions and watch how the UI spreads leaders across all three
   brokers for load balancing.
 

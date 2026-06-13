@@ -1,11 +1,12 @@
 # A3 — Rebalancing: in-flight reprocessing when a consumer dies
 
-> 🏫 **Classroom track** · ~45 min · The sequel to
-> [A2](../A2-Duplicate-Consumption/duplicate-consumption.md) and the answer to
+> 🏫 **Classroom track** · ~45 min · The answer to
 > [`find-the-flaw.md`](../../04-Implement-Topics-And-Partitions/find-the-flaw.md) question 3:
 > *"What happens if a consumer goes down and its partition is transferred to another consumer?"*
-> In A2 one consumer reprocessed its own messages. Here a **different** consumer inherits the
-> dead one's partitions — and redoes its uncommitted work.
+> A consumer that crashes after processing but before committing makes its work get **redone** — and
+> here, thanks to a rebalance, by a **different** consumer that inherits its partitions. (The
+> single-consumer version of this duplicate, and the idempotent fix, are the focus of
+> [A2](../A2-Duplicate-Consumption/duplicate-consumption.md) later in the course.)
 
 ## The idea
 
@@ -172,14 +173,13 @@ local memory wouldn't have caught it.
 
 ## Discussion
 
-- **This is the same root cause as [A2](../A2-Duplicate-Consumption/duplicate-consumption.md)**
-  — work done but not committed — but triggered by a **rebalance** and landing on a **different
-  consumer**. That second point matters: any deduplication has to be *shared* (a database, a
-  cache), not in one process's memory.
+- **The root cause is "work done but not committed"** — but here it's triggered by a **rebalance**
+  and lands on a **different consumer**. That second point matters: any deduplication has to be
+  *shared* (a database, a cache), not in one process's memory. You'll meet the single-consumer
+  version, and the idempotent fix, in [A2](../A2-Duplicate-Consumption/duplicate-consumption.md).
 - **Rebalances are not rare or exceptional.** They happen on every deploy, scale-up, scale-down,
   crash, and even on a consumer that's too slow (see A4). Your processing must be safe across
-  them, which means **idempotent processing** plus a sensible **commit strategy** — exactly the
-  fix from A2.
+  them, which means **idempotent processing** plus a sensible **commit strategy**.
 - **Had Worker A committed as it went**, only the records processed since its *last* commit would
   have been redone — the duplicate window shrinks to "one commit interval", but it never reaches
   zero with at-least-once. That residual window is why the outside-world side effect still has to

@@ -127,8 +127,8 @@ per-exercise staging, timing and talking points, see the separate instructor gui
   * [C1 — Multi-broker cluster: replication, ISR, `acks=all`, failover](labs/classroom/C1-Multi-Broker-Cluster/multi-broker-cluster.md)
   * [A3 — Rebalancing: in-flight reprocessing when a consumer dies](labs/classroom/A3-Rebalance-Reprocessing/rebalance-reprocessing.md)
   * [A4 — The slow-poll eviction (`max.poll.interval.ms`)](labs/classroom/A4-Slow-Poll-Eviction/slow-poll-eviction.md) *(provided Java; build & run via Docker)*
-  * [B2 — Partitions & consumer parallelism: where adding consumers stops helping](labs/classroom/B2-Partitions-And-Parallelism/partitions-and-parallelism.md)
   * [C2 — Consumer lag & backpressure](labs/classroom/C2-Consumer-Lag/consumer-lag.md)
+  * [B2 — Partitions & consumer parallelism: where adding consumers stops helping](labs/classroom/B2-Partitions-And-Parallelism/partitions-and-parallelism.md)
 * **Streaming APIs for Kafka** (Lecture) + IoT case study
   * Lead-in: [C4 — Log compaction & tombstones: a topic as a changelog of state](labs/classroom/C4-Log-Compaction/log-compaction.md)
   * Lab: [Word count with Kafka Streams](labs/06-Streaming/wordcount-kafka-streaming.md)

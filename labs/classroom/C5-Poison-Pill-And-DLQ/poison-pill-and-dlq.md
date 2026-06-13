@@ -164,9 +164,9 @@ docker exec broker kafka-consumer-groups --bootstrap-server :9092 --describe --g
   data" is `--reset-offsets --to-datetime` + restart. Because consumption is just a movable offset,
   replay is a first-class operation — one of Kafka's superpowers over a traditional queue, where a
   consumed message is gone.
-- **Poison handling connects back to idempotency** ([A2](../A2-Duplicate-Consumption/duplicate-consumption.md)):
+- **Poison handling ties into idempotency** ([A2](../A2-Duplicate-Consumption/duplicate-consumption.md)):
   if your DLQ-and-skip logic itself retries, the good records around the poison can be processed
-  more than once — so the same "make processing idempotent" rule applies.
+  more than once — so the "make processing idempotent" rule you'll meet in A2 applies here too.
 
 ## Cleanup
 
