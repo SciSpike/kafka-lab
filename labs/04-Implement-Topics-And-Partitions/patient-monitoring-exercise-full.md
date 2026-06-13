@@ -155,7 +155,7 @@ Whenever the patient vitals change, it pushes an event to a new patient topic.
 Create the following topics:
 
 - device-heartbeat
-- device-events
+- device-event
 - patient-vitals
 - patient-alarm
 - device-status
